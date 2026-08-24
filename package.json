@@ -1,20 +1,14 @@
 {
-<<<<<<< HEAD
-  "name": "mern-stack-app",
+  "name": "baafiye",
   "version": "1.0.0",
-  "description": "Basic MERN stack with header, footer, and empty pages",
+  "private": true,
   "scripts": {
-    "install-all": "npm install --prefix backend && npm install --prefix frontend",
-    "dev": "concurrently \"npm run dev --prefix backend\" \"npm run dev --prefix frontend\"",
-    "dev:backend": "npm run dev --prefix backend",
-    "dev:frontend": "npm run dev --prefix frontend"
+    "install-all": "npm install --prefix server && npm install --prefix client",
+    "dev": "concurrently \"npm run dev --prefix server\" \"npm run dev --prefix client\"",
+    "dev:server": "npm run dev --prefix server",
+    "dev:client": "npm run dev --prefix client"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
-  },
-=======
->>>>>>> a4c83dc5cfa80e77266996b598ac3e6f75edc1ff
-  "dependencies": {
-    "react-icons": "^5.7.0"
   }
 }
