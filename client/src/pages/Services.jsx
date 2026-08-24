@@ -5,57 +5,58 @@ import {
   HiOutlineShieldCheck,
   HiOutlineUsers,
 } from 'react-icons/hi';
-import { so } from '../i18n/so';
+import { useI18n } from '../context/LanguageContext';
 import { usePageTitle } from '../hooks/usePageTitle';
 import Button from '../components/ui/Button';
 import Container from '../components/ui/Container';
 import PageHeader from '../components/ui/PageHeader';
 
-const services = [
-  {
-    icon: HiOutlineSearch,
-    title: so.services.foundBrowse,
-    description: so.services.foundBrowseBody,
-    link: '/items',
-    linkLabel: so.actions.search,
-  },
-  {
-    icon: HiOutlinePlus,
-    title: so.services.foundPost,
-    description: so.services.foundPostBody,
-    link: '/post-item',
-    linkLabel: so.actions.postFound,
-  },
-  {
-    icon: HiOutlineSearch,
-    title: so.services.lostBrowse,
-    description: so.services.lostBrowseBody,
-    link: '/lost-items',
-    linkLabel: so.actions.searchLost,
-  },
-  {
-    icon: HiOutlinePlus,
-    title: so.services.lostPost,
-    description: so.services.lostPostBody,
-    link: '/post-lost',
-    linkLabel: so.actions.postLost,
-  },
-  {
-    icon: HiOutlineShieldCheck,
-    title: so.services.privacy,
-    description: so.services.privacyBody,
-    link: '/about',
-    linkLabel: so.nav.about,
-  },
-];
-
 export default function Services() {
-  usePageTitle('Sida uu u shaqeeyo — Baafiye');
+  const { t } = useI18n();
+  usePageTitle(t.meta.services);
+
+  const services = [
+    {
+      icon: HiOutlineSearch,
+      title: t.services.foundBrowse,
+      description: t.services.foundBrowseBody,
+      link: '/items',
+      linkLabel: t.actions.search,
+    },
+    {
+      icon: HiOutlinePlus,
+      title: t.services.foundPost,
+      description: t.services.foundPostBody,
+      link: '/post-item',
+      linkLabel: t.actions.postFound,
+    },
+    {
+      icon: HiOutlineSearch,
+      title: t.services.lostBrowse,
+      description: t.services.lostBrowseBody,
+      link: '/lost-items',
+      linkLabel: t.actions.searchLost,
+    },
+    {
+      icon: HiOutlinePlus,
+      title: t.services.lostPost,
+      description: t.services.lostPostBody,
+      link: '/post-lost',
+      linkLabel: t.actions.postLost,
+    },
+    {
+      icon: HiOutlineShieldCheck,
+      title: t.services.privacy,
+      description: t.services.privacyBody,
+      link: '/about',
+      linkLabel: t.nav.about,
+    },
+  ];
 
   return (
     <div>
       <Container className="py-12 sm:py-16">
-        <PageHeader eyebrow={so.services.eyebrow} title={so.services.title} description={so.services.body} />
+        <PageHeader eyebrow={t.services.eyebrow} title={t.services.title} description={t.services.body} />
 
         <div className="grid gap-6 md:grid-cols-2">
           {services.map(({ icon: Icon, title, description, link, linkLabel }) => (
@@ -79,10 +80,10 @@ export default function Services() {
       <section className="relative overflow-hidden bg-forest text-white section-y">
         <Container className="max-w-3xl text-center">
           <HiOutlineUsers className="mx-auto size-8" />
-          <h2 className="mt-4 text-white">{so.services.ctaTitle}</h2>
-          <p className="mt-3 text-white/80">{so.services.ctaBody}</p>
+          <h2 className="mt-4 text-white">{t.services.ctaTitle}</h2>
+          <p className="mt-3 text-white/80">{t.services.ctaBody}</p>
           <Button as={Link} to="/register" variant="secondary" className="mt-6">
-            {so.services.cta}
+            {t.services.cta}
           </Button>
         </Container>
       </section>

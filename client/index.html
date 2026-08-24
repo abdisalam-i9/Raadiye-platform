@@ -24,6 +24,8 @@
           if (theme === 'dark') document.documentElement.classList.add('dark');
           var meta = document.querySelector('meta[name="theme-color"]');
           if (meta) meta.content = theme === 'dark' ? '#0c1612' : '#0f7a62';
+          var lang = localStorage.getItem('baafiye-lang');
+          document.documentElement.lang = lang === 'en' ? 'en' : 'so';
         } catch (e) {}
       })();
     </script>

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { api } from '../services/api';
-import { so } from '../i18n/so';
+import { useI18n } from '../context/LanguageContext';
 import { getErrorMessage } from '../utils/helpers';
 import { usePageTitle } from '../hooks/usePageTitle';
 import AuthCard from '../components/ui/AuthCard';
@@ -10,6 +10,7 @@ import Input from '../components/ui/Input';
 import Alert from '../components/ui/Alert';
 
 export default function VerifyEmail() {
+  const { t } = useI18n();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const [email, setEmail] = useState(searchParams.get('email') || '');
@@ -19,7 +20,7 @@ export default function VerifyEmail() {
   const [loading, setLoading] = useState(false);
   const [resending, setResending] = useState(false);
 
-  usePageTitle('Xaqiiji email-ka — Baafiye');
+  usePageTitle(t.meta.verify);
 
   const handleVerify = async (event) => {
     event.preventDefault();
@@ -29,7 +30,7 @@ export default function VerifyEmail() {
 
     try {
       await api.auth.verify({ email, code });
-      setSuccess(so.auth.verifySuccess);
+      setSuccess(t.auth.verifySuccess);
       setTimeout(() => navigate('/login'), 1500);
     } catch (err) {
       setError(getErrorMessage(err));
@@ -45,7 +46,7 @@ export default function VerifyEmail() {
 
     try {
       await api.auth.resendVerification({ email });
-      setSuccess(so.auth.resendSuccess);
+      setSuccess(t.auth.resendSuccess);
     } catch (err) {
       setError(getErrorMessage(err));
     } finally {
@@ -54,12 +55,12 @@ export default function VerifyEmail() {
   };
 
   return (
-    <AuthCard title={so.auth.verifyTitle} description={so.auth.verifyBody}>
+    <AuthCard title={t.auth.verifyTitle} description={t.auth.verifyBody}>
       <form onSubmit={handleVerify} className="space-y-4">
         <Input
           id="email"
           type="email"
-          label={so.auth.email}
+          label={t.auth.email}
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -68,18 +69,18 @@ export default function VerifyEmail() {
           id="code"
           type="text"
           inputMode="numeric"
-          label={so.auth.code}
+          label={t.auth.code}
           required
           value={code}
           onChange={(e) => setCode(e.target.value)}
-          placeholder={so.auth.codeHint}
+          placeholder={t.auth.codeHint}
         />
 
         {error && <Alert type="error">{error}</Alert>}
         {success && <Alert type="success">{success}</Alert>}
 
         <Button type="submit" className="w-full" loading={loading} size="lg">
-          {loading ? so.auth.verifying : so.auth.verifyAction}
+          {loading ? t.auth.verifying : t.auth.verifyAction}
         </Button>
       </form>
 
@@ -90,10 +91,10 @@ export default function VerifyEmail() {
           disabled={resending || !email}
           className="font-semibold text-forest disabled:opacity-60"
         >
-          {resending ? so.auth.resending : so.auth.resend}
+          {resending ? t.auth.resending : t.auth.resend}
         </button>
         <Link to="/login" className="text-muted hover:text-forest">
-          {so.auth.backLogin}
+          {t.auth.backLogin}
         </Link>
       </div>
     </AuthCard>

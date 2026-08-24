@@ -4,16 +4,12 @@ export const LISTINGS = {
     listPath: '/items',
     postPath: '/post-item',
     dateField: 'foundDate',
-    pageTitle: 'Raadi Alaab La Helay — Baafiye',
-    postTitle: 'Soo gudbi shay la helay — Baafiye',
   },
   lost: {
     kind: 'lost',
     listPath: '/lost-items',
     postPath: '/post-lost',
     dateField: 'lostDate',
-    pageTitle: 'Raadi Alaab Lumay — Baafiye',
-    postTitle: 'Soo gudbi shay lumay — Baafiye',
   },
 };
 

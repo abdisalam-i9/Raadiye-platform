@@ -8,10 +8,11 @@ import Button from '../components/ui/Button';
 import Container from '../components/ui/Container';
 import { useCategories } from '../context/CategoriesContext';
 import { usePageTitle } from '../hooks/usePageTitle';
-import { so } from '../i18n/so';
+import { useI18n } from '../context/LanguageContext';
 
 export default function Home() {
-  usePageTitle('Baafiye — Raadi Alaabta Kaa Lumay');
+  const { t } = useI18n();
+  usePageTitle(t.meta.home);
   const { categories, loading } = useCategories();
   const activeCategories = categories.filter((category) => category.isActive !== false);
 
@@ -23,8 +24,8 @@ export default function Home() {
 
       <section className="section-y">
         <Container>
-          <h2 className="text-ink">Maxaad raadineysaa?</h2>
-          <p className="mt-2 text-ink-soft">Dooro qayb si aad si degdeg ah ugu raadsato.</p>
+          <h2 className="text-ink">{t.home.lookingFor}</h2>
+          <p className="mt-2 text-ink-soft">{t.home.lookingForBody}</p>
 
           {loading ? (
             <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
@@ -44,25 +45,25 @@ export default function Home() {
 
       <section className="section-y">
         <Container>
-          <h2 className="text-center text-ink">Sida Baafiye u shaqeeyo</h2>
+          <h2 className="text-center text-ink">{t.home.howTitle}</h2>
           <div className="mt-10 grid gap-6 md:grid-cols-3">
             <Step
               icon={HiOutlineSearch}
               number="1"
-              title="Shay baa lumay"
-              text="Raadi alaabta la helay, ama soo gudbi kan kaa lumay."
+              title={t.home.step1Title}
+              text={t.home.step1Body}
             />
             <Step
               icon={HiOutlineUpload}
               number="2"
-              title="Shay baa la helay"
-              text="Qofkii helay wuxuu ku soo gudbiyaa xogta muhiimka ah."
+              title={t.home.step2Title}
+              text={t.home.step2Body}
             />
             <Step
               icon={HiOutlinePhone}
               number="3"
-              title="Isku xir"
-              text="Wac lambarka. Ha is dhaafin lacag ama xog sir ah."
+              title={t.home.step3Title}
+              text={t.home.step3Body}
             />
           </div>
         </Container>
@@ -70,14 +71,10 @@ export default function Home() {
 
       <section className="section-y">
         <Container className="max-w-3xl text-center">
-          <h2 className="text-ink">Shay kasta qof baa leh.</h2>
-          <p className="mx-auto mt-4 text-lg leading-8 text-ink-soft">
-            Mararka qaar waxa qof ka lumay waa wax yar, laakiin qofka iska leh waxay u
-            noqon kartaa wax aad muhiim u ah. Baafiye wuxuu bulshada ka caawinayaa inay
-            is caawiso.
-          </p>
+          <h2 className="text-ink">{t.home.ctaTitle}</h2>
+          <p className="mx-auto mt-4 text-lg leading-8 text-ink-soft">{t.home.ctaBody}</p>
           <Button as={Link} to="/items" className="mt-6">
-            {so.actions.search}
+            {t.actions.search}
           </Button>
         </Container>
       </section>
@@ -85,16 +82,14 @@ export default function Home() {
       <section className="relative overflow-hidden bg-forest text-white section-y">
         <div className="pointer-events-none absolute -right-16 top-0 size-64 rounded-full bg-white/10 blur-3xl" />
         <Container className="relative text-center">
-          <h2 className="text-white">Ma heshay shay, ama ma kaa lumay?</h2>
-          <p className="mx-auto mt-3 max-w-xl text-white/80">
-            Soo gudbi si qofkii kale uu kuu soo waco.
-          </p>
+          <h2 className="text-white">{t.home.ctaFoundTitle}</h2>
+          <p className="mx-auto mt-3 max-w-xl text-white/80">{t.home.ctaFoundBody}</p>
           <div className="mt-6 flex flex-wrap justify-center gap-3">
             <Button as={Link} to="/post-item" variant="secondary">
-              {so.actions.postFound}
+              {t.actions.postFound}
             </Button>
             <Button as={Link} to="/post-lost" variant="onDark">
-              {so.actions.postLost}
+              {t.actions.postLost}
             </Button>
           </div>
         </Container>

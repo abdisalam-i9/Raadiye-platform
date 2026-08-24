@@ -4,11 +4,24 @@ import Category from '../model/Category.js';
 import authMiddleware from '../middleware/authMiddleware.js';
 import { createItemLimiter } from '../middleware/rateLimiter.js';
 import { MOGADISHU_DISTRICTS } from '../constants/districts.js';
+import { handleItemImageUpload } from '../middleware/uploadMiddleware.js';
+import { saveItemImage } from '../utils/saveItemImage.js';
+
+async function storeUploadedImage(req, res) {
+  if (!req.file) return '';
+  try {
+    return await saveItemImage(req.file);
+  } catch (error) {
+    console.log('Image upload error:', error);
+    res.status(500).json({ status: false, message: 'Failed to upload image' });
+    return null;
+  }
+}
 
 export function createListingRouter({ Model, dateField, label }) {
   const router = express.Router();
 
-  router.post('/', createItemLimiter, authMiddleware, async (req, res) => {
+  router.post('/', createItemLimiter, authMiddleware, handleItemImageUpload, async (req, res) => {
     try {
       const { title, category, district, village, contactPhone } = req.body;
       const dateValue = req.body[dateField];
@@ -39,6 +52,9 @@ export function createListingRouter({ Model, dateField, label }) {
         return res.status(400).json({ status: false, message: `Invalid ${dateField}` });
       }
 
+      const uploadedImage = await storeUploadedImage(req, res);
+      if (uploadedImage === null) return undefined;
+
       const item = await Model.create({
         title: title.trim(),
         category,
@@ -46,13 +62,13 @@ export function createListingRouter({ Model, dateField, label }) {
         village: village.trim(),
         [dateField]: parsedDate,
         contactPhone: contactPhone.trim(),
-        image: categoryExists.image || '',
+        image: uploadedImage,
         status: 'active',
         postedBy: req.user.userId,
         expiresAt: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
       });
 
-      await item.populate('category', 'name slug image');
+      await item.populate('category', 'name slug');
 
       return res.status(201).json({
         status: true,
@@ -86,7 +102,7 @@ export function createListingRouter({ Model, dateField, label }) {
 
       const [items, totalItems] = await Promise.all([
         Model.find(filter)
-          .populate('category', 'name slug image')
+          .populate('category', 'name slug')
           .sort({ createdAt: -1 })
           .skip(skip)
           .limit(itemsPerPage),
@@ -116,7 +132,7 @@ export function createListingRouter({ Model, dateField, label }) {
   router.get('/my-items', authMiddleware, async (req, res) => {
     try {
       const items = await Model.find({ postedBy: req.user.userId })
-        .populate('category', 'name slug image')
+        .populate('category', 'name slug')
         .sort({ createdAt: -1 });
 
       return res.status(200).json({ status: true, items });
@@ -135,7 +151,7 @@ export function createListingRouter({ Model, dateField, label }) {
       const item = await Model.findOne({
         _id: req.params.id,
         status: 'active',
-      }).populate('category', 'name slug image');
+      }).populate('category', 'name slug');
 
       if (!item) {
         return res.status(404).json({
@@ -151,7 +167,7 @@ export function createListingRouter({ Model, dateField, label }) {
     }
   });
 
-  router.put('/:id', authMiddleware, async (req, res) => {
+  router.put('/:id', authMiddleware, handleItemImageUpload, async (req, res) => {
     try {
       const { title, category, district, village, contactPhone } = req.body;
       const dateValue = req.body[dateField];
@@ -190,7 +206,6 @@ export function createListingRouter({ Model, dateField, label }) {
           return res.status(400).json({ status: false, message: 'Category not found or inactive' });
         }
         item.category = category;
-        item.image = categoryExists.image || '';
       }
 
       if (district !== undefined) {
@@ -225,8 +240,14 @@ export function createListingRouter({ Model, dateField, label }) {
         item.contactPhone = cleanPhone;
       }
 
+      if (req.file) {
+        const uploadedImage = await storeUploadedImage(req, res);
+        if (uploadedImage === null) return undefined;
+        item.image = uploadedImage;
+      }
+
       await item.save();
-      await item.populate('category', 'name slug image');
+      await item.populate('category', 'name slug');
 
       return res.status(200).json({ status: true, message: `${label} updated successfully`, item });
     } catch (error) {

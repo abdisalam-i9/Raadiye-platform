@@ -2,21 +2,22 @@ import { Link } from 'react-router-dom';
 import ItemCard from './ItemCard';
 import EmptyState from '../ui/EmptyState';
 import Button from '../ui/Button';
-import { so } from '../../i18n/so';
+import { useI18n } from '../../context/LanguageContext';
 import { getListing } from '../../constants/listings';
 
 export default function ItemsGrid({ items = [], emptyAction, kind = 'found' }) {
+  const { t } = useI18n();
   const listing = getListing(kind);
 
   if (!items.length) {
     return (
       <EmptyState
-        title={so.empty.itemsTitle}
-        description={so.empty.itemsBody}
+        title={t.empty.itemsTitle}
+        description={t.empty.itemsBody}
         action={
           emptyAction || (
             <Button as={Link} to={listing.postPath}>
-              {kind === 'lost' ? so.actions.postLost : so.actions.postFound}
+              {kind === 'lost' ? t.actions.postLost : t.actions.postFound}
             </Button>
           )
         }

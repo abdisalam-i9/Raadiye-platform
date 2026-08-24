@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { api } from '../services/api';
-import { so } from '../i18n/so';
+import { useI18n } from '../context/LanguageContext';
 import { getErrorMessage } from '../utils/helpers';
 import { usePageTitle } from '../hooks/usePageTitle';
 import AuthCard from '../components/ui/AuthCard';
@@ -10,12 +10,13 @@ import Input from '../components/ui/Input';
 import Alert from '../components/ui/Alert';
 
 export default function ForgotPassword() {
+  const { t } = useI18n();
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
 
-  usePageTitle('Illaawday erayga sirta? — Baafiye');
+  usePageTitle(t.meta.forgot);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -25,7 +26,7 @@ export default function ForgotPassword() {
 
     try {
       await api.auth.forgotPassword({ email });
-      setSuccess(so.auth.forgotSuccess);
+      setSuccess(t.auth.forgotSuccess);
     } catch (err) {
       setError(getErrorMessage(err));
     } finally {
@@ -34,12 +35,12 @@ export default function ForgotPassword() {
   };
 
   return (
-    <AuthCard title={so.auth.forgotTitle} description={so.auth.forgotBody}>
+    <AuthCard title={t.auth.forgotTitle} description={t.auth.forgotBody}>
       <form onSubmit={handleSubmit} className="space-y-4">
         <Input
           id="email"
           type="email"
-          label={so.auth.email}
+          label={t.auth.email}
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -50,13 +51,13 @@ export default function ForgotPassword() {
         {success && <Alert type="success">{success}</Alert>}
 
         <Button type="submit" className="w-full" loading={loading} size="lg">
-          {loading ? so.actions.submitting : so.auth.forgotAction}
+          {loading ? t.actions.submitting : t.auth.forgotAction}
         </Button>
       </form>
 
       <p className="mt-4 text-center text-sm">
         <Link to="/login" className="font-semibold text-forest hover:underline">
-          {so.auth.backLogin}
+          {t.auth.backLogin}
         </Link>
       </p>
     </AuthCard>

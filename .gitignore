@@ -11,6 +11,10 @@ node_modules/
 dist/
 build/
 
+# Local item photo uploads
+server/uploads/items/*
+!server/uploads/items/.gitkeep
+
 # Logs
 *.log
 npm-debug.log*

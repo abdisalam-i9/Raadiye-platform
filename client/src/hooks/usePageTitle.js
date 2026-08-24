@@ -1,10 +1,11 @@
 import { useEffect } from 'react';
+import { getT } from '../i18n';
 
 export function usePageTitle(title) {
   useEffect(() => {
     document.title = title;
     return () => {
-      document.title = 'Baafiye — Raadi Alaabta Kaa Lumay';
+      document.title = getT().meta.default;
     };
   }, [title]);
 }

@@ -6,10 +6,11 @@ import { useToast } from '../context/ToastContext';
 import { listingApi } from '../services/api';
 import { DISTRICTS } from '../constants/locations';
 import { getItemDate, getListing } from '../constants/listings';
-import { so } from '../i18n/so';
+import { useI18n } from '../context/LanguageContext';
 import { formatDate, getCategoryName, getErrorMessage } from '../utils/helpers';
 import { usePageTitle } from '../hooks/usePageTitle';
-import CategoryImage from '../components/ui/CategoryImage';
+import ItemImage from '../components/ui/ItemImage';
+import ImageUpload from '../components/ui/ImageUpload';
 import StatusBadge from '../components/ui/StatusBadge';
 import ContactFounder from '../components/ui/ContactFounder';
 import Button from '../components/ui/Button';
@@ -20,6 +21,7 @@ import { DetailSkeleton } from '../components/ui/Skeleton';
 import Container from '../components/ui/Container';
 
 export default function ItemDetail({ kind = 'found' }) {
+  const { t } = useI18n();
   const listing = getListing(kind);
   const isLost = kind === 'lost';
   const dateField = listing.dateField;
@@ -37,8 +39,9 @@ export default function ItemDetail({ kind = 'found' }) {
   const [confirmCancel, setConfirmCancel] = useState(false);
   const [confirmReturned, setConfirmReturned] = useState(false);
   const [form, setForm] = useState({});
+  const [imageFile, setImageFile] = useState(null);
 
-  usePageTitle(item ? `${item.title} — Baafiye` : 'Baafiye');
+  usePageTitle(item ? `${item.title} ${t.meta.itemSuffix}` : t.meta.itemFallback);
 
   const fetchItem = useCallback(async () => {
     setLoading(true);
@@ -77,12 +80,22 @@ export default function ItemDetail({ kind = 'found' }) {
     setActionLoading(true);
 
     try {
-      const data = await listingApi(kind).update(id, form);
+      let payload = form;
+      if (imageFile) {
+        payload = new FormData();
+        Object.entries(form).forEach(([key, value]) => {
+          payload.append(key, value ?? '');
+        });
+        payload.append('image', imageFile);
+      }
+
+      const data = await listingApi(kind).update(id, payload);
       setItem(data.item);
       setEditing(false);
-      showToast('Shayga waa la cusboonaysiiyay');
+      setImageFile(null);
+      showToast(t.item.updated);
     } catch (err) {
-      showToast(getErrorMessage(err, so.errors.generic), 'error');
+      showToast(getErrorMessage(err, t.errors.generic), 'error');
     } finally {
       setActionLoading(false);
     }
@@ -92,10 +105,10 @@ export default function ItemDetail({ kind = 'found' }) {
     setActionLoading(true);
     try {
       await listingApi(kind).delete(id);
-      showToast('Shayga waa laga saaray raadinta');
+      showToast(t.item.removed);
       navigate(isLost ? '/my-items?tab=lost' : '/my-items');
     } catch (err) {
-      showToast(getErrorMessage(err, so.errors.generic), 'error');
+      showToast(getErrorMessage(err, t.errors.generic), 'error');
     } finally {
       setActionLoading(false);
       setConfirmCancel(false);
@@ -107,11 +120,9 @@ export default function ItemDetail({ kind = 'found' }) {
     try {
       const data = await listingApi(kind).markReturned(id);
       setItem(data.item);
-      showToast(
-        isLost ? 'Shayga waxaa loo calaamadeeyay in la helay' : 'Shayga waxaa loo calaamadeeyay in la celiyay'
-      );
+      showToast(isLost ? t.myItems.markedFound : t.myItems.markedReturned);
     } catch (err) {
-      showToast(getErrorMessage(err, so.errors.generic), 'error');
+      showToast(getErrorMessage(err, t.errors.generic), 'error');
     } finally {
       setActionLoading(false);
       setConfirmReturned(false);
@@ -129,10 +140,10 @@ export default function ItemDetail({ kind = 'found' }) {
   if (error || !item) {
     return (
       <Container className="py-16 text-center">
-        <h1 className="text-ink">{so.errors.notFoundTitle}</h1>
-        <p className="mx-auto mt-3 text-ink-soft">{so.errors.notFoundBody}</p>
+        <h1 className="text-ink">{t.errors.notFoundTitle}</h1>
+        <p className="mx-auto mt-3 text-ink-soft">{t.errors.notFoundBody}</p>
         <Button as={Link} to={listing.listPath} className="mt-6">
-          {isLost ? so.detail.backLost : so.detail.back}
+          {isLost ? t.detail.backLost : t.detail.back}
         </Button>
       </Container>
     );
@@ -140,32 +151,32 @@ export default function ItemDetail({ kind = 'found' }) {
 
   const isActive = item.status === 'active';
   const statusCopy = {
-    active: isLost ? so.detail.lostActive : so.detail.active,
-    returned: isLost ? so.detail.lostReturned : so.detail.returned,
-    expired: so.detail.expired,
-    cancelled: so.detail.cancelled,
+    active: isLost ? t.detail.lostActive : t.detail.active,
+    returned: isLost ? t.detail.lostReturned : t.detail.returned,
+    expired: t.detail.expired,
+    cancelled: t.detail.cancelled,
   };
 
   return (
     <Container className="py-8 sm:py-12">
-      <nav className="mb-6 hidden text-sm text-muted md:block" aria-label="Jidka bogga">
+      <nav className="mb-6 hidden text-sm text-muted md:block" aria-label={t.a11y.breadcrumb}>
         <Link to="/" className="hover:text-forest">
-          {so.nav.home}
+          {t.nav.home}
         </Link>
         <span className="mx-2">/</span>
         <Link to={listing.listPath} className="hover:text-forest">
-          {isLost ? so.nav.lostItems : so.nav.items}
+          {isLost ? t.nav.lostItems : t.nav.items}
         </Link>
         <span className="mx-2">/</span>
         <span className="text-ink">{item.title}</span>
       </nav>
 
       <Button as={Link} to={listing.listPath} variant="ghost" size="sm" className="mb-6">
-        ← {isLost ? so.detail.backLost : so.detail.back}
+        ← {isLost ? t.detail.backLost : t.detail.back}
       </Button>
 
       <div className="surface overflow-hidden lg:grid lg:grid-cols-[1fr_1.1fr]">
-        <CategoryImage item={item} alt={item.title} className="h-72 w-full lg:h-full lg:min-h-[420px]" />
+        <ItemImage item={item} alt={item.title} className="h-72 w-full lg:h-full lg:min-h-[420px]" />
 
         <div className="p-6 sm:p-8">
           <div className="flex flex-wrap items-center gap-2">
@@ -183,11 +194,11 @@ export default function ItemDetail({ kind = 'found' }) {
           {!editing ? (
             <>
               <dl className="mt-6 grid gap-3 sm:grid-cols-2">
-                <Info label={so.detail.category} value={getCategoryName(item.category)} />
-                <Info label={so.detail.district} value={item.district} />
-                <Info label={so.detail.village} value={item.village} />
+                <Info label={t.detail.category} value={getCategoryName(item.category)} />
+                <Info label={t.detail.district} value={item.district} />
+                <Info label={t.detail.village} value={item.village} />
                 <Info
-                  label={isLost ? so.detail.lostDate : so.detail.foundDate}
+                  label={isLost ? t.detail.lostDate : t.detail.foundDate}
                   value={formatDate(getItemDate(item))}
                 />
               </dl>
@@ -200,23 +211,23 @@ export default function ItemDetail({ kind = 'found' }) {
 
               {!isActive && (
                 <p className="mt-8 rounded-xl bg-cream px-4 py-3 text-sm text-ink-soft">
-                  Shaygan hadda lama heli karo, sidaas darteed lambarka xiriirka lama muujinayo.
+                  {t.item.inactiveNote}
                 </p>
               )}
 
               {isOwner && (
                 <div className="mt-8 rounded-[1.35rem] border border-line/70 bg-cream/80 p-4">
-                  <p className="text-sm font-semibold text-ink">{so.detail.ownerNote}</p>
+                  <p className="text-sm font-semibold text-ink">{t.detail.ownerNote}</p>
                   {isActive && (
                     <div className="mt-4 flex flex-wrap gap-3">
                       <Button type="button" variant="outline" onClick={() => setEditing(true)}>
-                        {so.actions.edit}
+                        {t.actions.edit}
                       </Button>
                       <Button type="button" onClick={() => setConfirmReturned(true)}>
-                        {isLost ? so.actions.markFound : so.actions.markReturned}
+                        {isLost ? t.actions.markFound : t.actions.markReturned}
                       </Button>
                       <Button type="button" variant="danger" onClick={() => setConfirmCancel(true)}>
-                        {so.actions.cancel}
+                        {t.actions.cancel}
                       </Button>
                     </div>
                   )}
@@ -226,13 +237,13 @@ export default function ItemDetail({ kind = 'found' }) {
           ) : (
             <form onSubmit={handleUpdate} className="mt-6 space-y-4">
               <Input
-                label={so.post.title}
+                label={t.post.title}
                 value={form.title || ''}
                 onChange={(e) => setForm({ ...form, title: e.target.value })}
                 required
               />
               <Select
-                label={so.detail.category}
+                label={t.detail.category}
                 value={form.category || ''}
                 onChange={(e) => setForm({ ...form, category: e.target.value })}
                 required
@@ -244,7 +255,7 @@ export default function ItemDetail({ kind = 'found' }) {
                 ))}
               </Select>
               <Select
-                label={so.detail.district}
+                label={t.detail.district}
                 value={form.district || ''}
                 onChange={(e) => setForm({ ...form, district: e.target.value })}
                 required
@@ -256,31 +267,36 @@ export default function ItemDetail({ kind = 'found' }) {
                 ))}
               </Select>
               <Input
-                label={so.detail.village}
+                label={t.detail.village}
                 value={form.village || ''}
                 onChange={(e) => setForm({ ...form, village: e.target.value })}
                 required
               />
               <Input
-                label={isLost ? so.detail.lostDate : so.detail.foundDate}
+                label={isLost ? t.detail.lostDate : t.detail.foundDate}
                 type="date"
                 value={form[dateField] || ''}
                 onChange={(e) => setForm({ ...form, [dateField]: e.target.value })}
                 required
               />
               <Input
-                label={so.post.phone}
+                label={t.post.phone}
                 value={form.contactPhone || ''}
                 onChange={(e) => setForm({ ...form, contactPhone: e.target.value })}
                 required
               />
-              <p className="text-xs leading-5 text-muted">{so.detail.privacy}</p>
+              <ImageUpload
+                file={imageFile}
+                existingUrl={item.image}
+                onFileChange={setImageFile}
+              />
+              <p className="text-xs leading-5 text-muted">{t.detail.privacy}</p>
               <div className="flex gap-3">
                 <Button type="submit" loading={actionLoading}>
-                  Kaydi
+                  {t.common.save}
                 </Button>
-                <Button type="button" variant="ghost" onClick={() => setEditing(false)}>
-                  Ka noqo
+                <Button type="button" variant="ghost" onClick={() => { setEditing(false); setImageFile(null); }}>
+                  {t.common.dismiss}
                 </Button>
               </div>
             </form>
@@ -294,10 +310,10 @@ export default function ItemDetail({ kind = 'found' }) {
         onConfirm={handleDelete}
         danger
         loading={actionLoading}
-        title="Ma hubtaa inaad rabto inaad ka saarto shaygan?"
-        description="Ficilkan wuxuu ka dhigayaa shayga mid aan dadku ka raadin karin."
-        confirmLabel="Haa, ka saar"
-        cancelLabel="Ka noqo"
+        title={t.item.confirmRemoveTitle}
+        description={t.item.confirmRemoveBody}
+        confirmLabel={t.item.confirmRemove}
+        cancelLabel={t.common.dismiss}
       />
 
       <ConfirmModal
@@ -305,10 +321,10 @@ export default function ItemDetail({ kind = 'found' }) {
         onClose={() => setConfirmReturned(false)}
         onConfirm={handleMarkReturned}
         loading={actionLoading}
-        title={isLost ? 'Shaygan ma la helay?' : 'Shaygan ma la siiyay qofkii lahaa?'}
-        description="Haddii aad calaamadaysid, shaygan kama soo muuqan doono raadinta dadweynaha."
-        confirmLabel={isLost ? 'Haa, waa la helay' : 'Haa, waa la celiyay'}
-        cancelLabel="Maya"
+        title={isLost ? t.item.confirmFoundTitle : t.item.confirmReturnedTitle}
+        description={t.item.confirmStatusBody}
+        confirmLabel={isLost ? t.item.confirmFound : t.item.confirmReturned}
+        cancelLabel={t.common.no}
       />
     </Container>
   );

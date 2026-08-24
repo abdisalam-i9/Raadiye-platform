@@ -201,32 +201,139 @@ html.dark .surface {
   box-shadow: var(--shadow-lift);
 }
 
+.nav-track {
+  display: none;
+  align-items: center;
+  gap: 0.15rem;
+  padding: 0.28rem;
+  border-radius: 999px;
+  background: rgb(238 245 241 / 0.78);
+  border: 1px solid rgb(213 228 219 / 0.7);
+}
+
+html.dark .nav-track {
+  background: rgb(22 56 46 / 0.55);
+  border-color: rgb(255 255 255 / 0.06);
+}
+
+@media (min-width: 1024px) {
+  .nav-track {
+    display: inline-flex;
+    min-width: 0;
+    max-width: min(46vw, 38rem);
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .nav-track::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 .nav-link {
   display: inline-flex;
   align-items: center;
+  white-space: nowrap;
   border-radius: 999px;
-  padding: 0.45rem 0.9rem;
-  font-size: 0.9rem;
+  padding: 0.42rem 0.85rem;
+  font-size: 0.8125rem;
   font-weight: 600;
+  letter-spacing: -0.01em;
   color: var(--color-ink-soft);
   text-decoration: none;
   transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .nav-link:hover {
-  background: rgb(15 122 98 / 0.08);
   color: var(--color-ink);
+  background: rgb(255 255 255 / 0.55);
+}
+
+html.dark .nav-link:hover {
+  background: rgb(255 255 255 / 0.06);
 }
 
 .nav-link-active {
-  background: var(--color-forest-light);
+  background: var(--color-paper);
   color: var(--color-forest-dark);
-  box-shadow: inset 0 0 0 1px rgb(15 122 98 / 0.12);
+  box-shadow: 0 1px 2px rgb(16 35 27 / 0.06), 0 4px 12px rgb(15 122 98 / 0.1);
 }
 
 html.dark .nav-link-active {
   color: var(--color-forest);
-  box-shadow: inset 0 0 0 1px rgb(61 214 165 / 0.18);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.25), 0 6px 14px rgb(0 0 0 / 0.22);
+}
+
+.header-tools {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.15rem;
+  padding: 0.2rem 0.3rem 0.2rem 0.35rem;
+  border-radius: 999px;
+  border: 1px solid rgb(213 228 219 / 0.8);
+  background: rgb(255 255 255 / 0.55);
+}
+
+html.dark .header-tools {
+  border-color: rgb(255 255 255 / 0.08);
+  background: rgb(22 56 46 / 0.45);
+}
+
+.site-footer {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background:
+    radial-gradient(900px 380px at 0% -10%, rgb(15 122 98 / 0.32), transparent 58%),
+    radial-gradient(720px 320px at 100% 8%, rgb(224 122 61 / 0.16), transparent 52%),
+    #07130f;
+}
+
+.footer-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: rgb(255 255 255 / 0.68);
+  text-decoration: none;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.footer-link::before {
+  content: "";
+  width: 0.35rem;
+  height: 0.35rem;
+  border-radius: 999px;
+  background: rgb(61 214 165 / 0.45);
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.footer-link:hover {
+  color: #fff;
+}
+
+.footer-link:hover::before {
+  background: var(--color-forest);
+  transform: scale(1.25);
+}
+
+.footer-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  border-radius: 1rem;
+  border: 1px solid rgb(255 255 255 / 0.08);
+  background: rgb(255 255 255 / 0.04);
+  padding: 0.7rem 0.85rem;
+  color: rgb(255 255 255 / 0.78);
+  text-decoration: none;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.footer-chip:hover {
+  border-color: rgb(61 214 165 / 0.28);
+  background: rgb(255 255 255 / 0.07);
+  color: #fff;
 }
 
 .skeleton-shimmer {
@@ -244,9 +351,12 @@ html.theme-animate,
 html.theme-animate body,
 html.theme-animate header,
 html.theme-animate footer,
+html.theme-animate .site-footer,
 html.theme-animate .glass,
 html.theme-animate .surface,
-html.theme-animate .nav-link {
+html.theme-animate .nav-link,
+html.theme-animate .nav-track,
+html.theme-animate .header-tools {
   transition:
     background-color 0.3s ease,
     color 0.3s ease,
@@ -283,6 +393,15 @@ html.theme-animate .nav-link {
   }
 }
 
+@keyframes slide-in-right {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
 @keyframes toast-in {
   from {
     opacity: 0;
@@ -300,6 +419,10 @@ html.theme-animate .nav-link {
 
 .animate-drawer {
   animation: slide-in-left 0.28s ease-out;
+}
+
+.animate-drawer-right {
+  animation: slide-in-right 0.28s ease-out;
 }
 
 .animate-toast {

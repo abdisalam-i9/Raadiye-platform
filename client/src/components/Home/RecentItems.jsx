@@ -6,10 +6,11 @@ import { ItemCardSkeleton } from '../ui/Skeleton';
 import EmptyState from '../ui/EmptyState';
 import Button from '../ui/Button';
 import Container from '../ui/Container';
-import { so } from '../../i18n/so';
+import { useI18n } from '../../context/LanguageContext';
 import { getListing } from '../../constants/listings';
 
 export default function RecentItems({ kind = 'found' }) {
+  const { t } = useI18n();
   const listing = getListing(kind);
   const isLost = kind === 'lost';
   const [items, setItems] = useState([]);
@@ -40,27 +41,19 @@ export default function RecentItems({ kind = 'found' }) {
       <Container>
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <h2 className="text-ink">
-              {isLost
-                ? 'Waxyaabihii ugu dambeeyay ee lumay'
-                : 'Waxyaabihii ugu dambeeyay ee la helay'}
-            </h2>
-            <p className="mt-2 text-ink-soft">
-              {isLost
-                ? 'Haddii aad heshay shay, waxaa laga yaabaa in qofkii lahaa uu halkan soo gudbiyay.'
-                : 'Waxaa laga yaabaa in waxa aad raadineyso uu halkan yaallo.'}
-            </p>
+            <h2 className="text-ink">{isLost ? t.recent.lostTitle : t.recent.foundTitle}</h2>
+            <p className="mt-2 text-ink-soft">{isLost ? t.recent.lostBody : t.recent.foundBody}</p>
           </div>
           <Button as={Link} to={listing.listPath} variant="ghost">
-            Arag dhammaan
+            {t.recent.viewAll}
           </Button>
         </div>
 
         {error && (
           <div className="mt-8 surface p-6 text-center">
-            <p className="text-ink-soft">{so.errors.recent}</p>
+            <p className="text-ink-soft">{t.errors.recent}</p>
             <Button type="button" className="mt-4" onClick={fetchRecent}>
-              Mar kale isku day
+              {t.common.retry}
             </Button>
           </div>
         )}
@@ -76,11 +69,11 @@ export default function RecentItems({ kind = 'found' }) {
         {!error && !loading && !items.length && (
           <div className="mt-8">
             <EmptyState
-              title={isLost ? so.empty.homeLostTitle : so.empty.homeItemsTitle}
-              description={isLost ? so.empty.homeLostBody : so.empty.homeItemsBody}
+              title={isLost ? t.empty.homeLostTitle : t.empty.homeItemsTitle}
+              description={isLost ? t.empty.homeLostBody : t.empty.homeItemsBody}
               action={
                 <Button as={Link} to={listing.postPath}>
-                  {isLost ? so.actions.postLost : so.actions.postFound}
+                  {isLost ? t.actions.postLost : t.actions.postFound}
                 </Button>
               }
             />

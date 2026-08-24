@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { api } from '../services/api';
-import { so } from '../i18n/so';
+import { useI18n } from '../context/LanguageContext';
 import { useCategories } from '../context/CategoriesContext';
 import { useToast } from '../context/ToastContext';
 import { getErrorMessage } from '../utils/helpers';
@@ -14,6 +14,7 @@ import PageHeader from '../components/ui/PageHeader';
 import { ConfirmModal } from '../components/ui/Modal';
 
 export default function AdminCategories() {
+  const { t } = useI18n();
   const { categories, loading, refreshCategories } = useCategories();
   const { showToast } = useToast();
   const [form, setForm] = useState({ name: '', slug: '', image: '' });
@@ -22,7 +23,7 @@ export default function AdminCategories() {
   const [submitting, setSubmitting] = useState(false);
   const [deactivateId, setDeactivateId] = useState('');
 
-  usePageTitle('Maamul qaybaha — Baafiye');
+  usePageTitle(t.meta.admin);
 
   const resetForm = () => {
     setForm({ name: '', slug: '', image: '' });
@@ -37,10 +38,10 @@ export default function AdminCategories() {
     try {
       if (editingId) {
         await api.categories.update(editingId, form);
-        showToast(so.admin.updated);
+        showToast(t.admin.updated);
       } else {
         await api.categories.create(form);
-        showToast(so.admin.created);
+        showToast(t.admin.created);
       }
 
       resetForm();
@@ -66,7 +67,7 @@ export default function AdminCategories() {
 
     try {
       await api.categories.delete(deactivateId);
-      showToast(so.admin.deactivated);
+      showToast(t.admin.deactivated);
       await refreshCategories();
     } catch (err) {
       showToast(getErrorMessage(err), 'error');
@@ -85,7 +86,7 @@ export default function AdminCategories() {
 
   return (
     <Container className="py-10 sm:py-14">
-      <PageHeader title={so.admin.title} description={so.admin.body} />
+      <PageHeader title={t.admin.title} description={t.admin.body} />
 
       <div className="grid gap-8 lg:grid-cols-[1fr_1.2fr]">
         <form
@@ -93,23 +94,23 @@ export default function AdminCategories() {
           className="surface space-y-4 p-6"
         >
           <h2 className="text-lg font-semibold text-ink">
-            {editingId ? so.admin.edit : so.admin.create}
+            {editingId ? t.admin.edit : t.admin.create}
           </h2>
 
           <Input
-            label={so.admin.name}
+            label={t.admin.name}
             value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
             required
           />
           <Input
-            label={so.admin.slug}
+            label={t.admin.slug}
             value={form.slug}
             onChange={(e) => setForm({ ...form, slug: e.target.value })}
             required
           />
           <Input
-            label={so.admin.image}
+            label={t.admin.image}
             value={form.image}
             onChange={(e) => setForm({ ...form, image: e.target.value })}
           />
@@ -118,18 +119,18 @@ export default function AdminCategories() {
 
           <div className="flex gap-3">
             <Button type="submit" loading={submitting}>
-              {editingId ? so.admin.update : so.admin.save}
+              {editingId ? t.admin.update : t.admin.save}
             </Button>
             {editingId && (
               <Button type="button" variant="ghost" onClick={resetForm}>
-                {so.actions.cancel}
+                {t.actions.cancel}
               </Button>
             )}
           </div>
         </form>
 
         <div className="surface p-6">
-          <h2 className="text-lg font-semibold text-ink">{so.admin.existing}</h2>
+          <h2 className="text-lg font-semibold text-ink">{t.admin.existing}</h2>
           <ul className="mt-5 divide-y divide-line">
             {categories.map((category) => (
               <li key={category._id} className="flex items-center justify-between gap-4 py-4">
@@ -139,7 +140,7 @@ export default function AdminCategories() {
                 </div>
                 <div className="flex gap-2">
                   <Button type="button" variant="outline" size="sm" onClick={() => handleEdit(category)}>
-                    {so.actions.edit}
+                    {t.actions.edit}
                   </Button>
                   <Button
                     type="button"
@@ -147,7 +148,7 @@ export default function AdminCategories() {
                     size="sm"
                     onClick={() => setDeactivateId(category._id)}
                   >
-                    {so.admin.deactivate}
+                    {t.admin.deactivate}
                   </Button>
                 </div>
               </li>
@@ -161,9 +162,9 @@ export default function AdminCategories() {
         onClose={() => setDeactivateId('')}
         onConfirm={handleDelete}
         danger
-        title={so.admin.confirmDeactivate}
-        confirmLabel={so.admin.deactivate}
-        cancelLabel="Ka noqo"
+        title={t.admin.confirmDeactivate}
+        confirmLabel={t.admin.deactivate}
+        cancelLabel={t.common.dismiss}
       />
     </Container>
   );

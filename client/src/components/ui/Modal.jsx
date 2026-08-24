@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { HiX } from 'react-icons/hi';
 import Button from './Button';
+import { useI18n } from '../../context/LanguageContext';
 
 export default function Modal({
   open,
@@ -9,6 +10,7 @@ export default function Modal({
   children,
   footer,
 }) {
+  const { t } = useI18n();
   useEffect(() => {
     if (!open) return undefined;
 
@@ -50,7 +52,7 @@ export default function Modal({
             type="button"
             onClick={onClose}
             className="rounded-lg p-1 text-muted hover:bg-cream hover:text-ink"
-            aria-label="Xir"
+            aria-label={t.a11y.close}
           >
             <HiX className="size-5" />
           </button>
@@ -68,11 +70,14 @@ export function ConfirmModal({
   onConfirm,
   title,
   description,
-  confirmLabel = 'Haa',
-  cancelLabel = 'Ka noqo',
+  confirmLabel,
+  cancelLabel,
   danger = false,
   loading = false,
 }) {
+  const { t } = useI18n();
+  const resolvedConfirm = confirmLabel || t.common.yes;
+  const resolvedCancel = cancelLabel || t.common.dismiss;
   return (
     <Modal
       open={open}
@@ -81,14 +86,14 @@ export function ConfirmModal({
       footer={
         <>
           <Button variant="ghost" onClick={onClose}>
-            {cancelLabel}
+            {resolvedCancel}
           </Button>
           <Button
             variant={danger ? 'danger' : 'primary'}
             loading={loading}
             onClick={onConfirm}
           >
-            {confirmLabel}
+            {resolvedConfirm}
           </Button>
         </>
       }

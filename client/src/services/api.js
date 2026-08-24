@@ -52,9 +52,7 @@ function extractErrorMessage(data, fallback = 'Waxbaa qaldamay. Fadlan mar kale 
 }
 
 async function request(path, { method = 'GET', body, auth = false } = {}) {
-  const headers = {
-    'Content-Type': 'application/json',
-  };
+  const headers = {};
 
   if (auth) {
     const token = getToken();
@@ -63,10 +61,15 @@ async function request(path, { method = 'GET', body, auth = false } = {}) {
     }
   }
 
+  const isForm = typeof FormData !== 'undefined' && body instanceof FormData;
+  if (!isForm) {
+    headers['Content-Type'] = 'application/json';
+  }
+
   const response = await fetch(`${API_BASE}${path}`, {
     method,
     headers,
-    body: body ? JSON.stringify(body) : undefined,
+    body: body == null ? undefined : isForm ? body : JSON.stringify(body),
   });
 
   let data = null;

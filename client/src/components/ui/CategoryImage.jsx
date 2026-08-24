@@ -1,5 +1,5 @@
 import { cn } from '../../utils/cn';
-import { getCategoryName, getItemImage } from '../../utils/helpers';
+import { getCategoryName, getCategoryImage, resolveImageUrl } from '../../utils/helpers';
 
 const fallbackColors = {
   money: 'bg-ok-light text-ok',
@@ -13,11 +13,10 @@ const fallbackColors = {
   other: 'bg-cream text-muted',
 };
 
-export default function CategoryImage({ item, category, alt, className }) {
-  const source = item || { category };
-  const image = getItemImage(source);
-  const name = getCategoryName(source.category || category);
-  const slug = (source.category?.slug || category?.slug || 'other').toLowerCase();
+export default function CategoryImage({ category, alt, className }) {
+  const image = resolveImageUrl(getCategoryImage(category));
+  const name = getCategoryName(category);
+  const slug = (category?.slug || 'other').toLowerCase();
   const letter = name.charAt(0).toUpperCase();
 
   if (image) {

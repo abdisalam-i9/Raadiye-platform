@@ -1,15 +1,17 @@
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useI18n } from '../context/LanguageContext';
 import LoadingSpinner from './ui/LoadingSpinner';
 
 export default function ProtectedRoute({ children, adminOnly = false }) {
+  const { t } = useI18n();
   const { isAuthenticated, isAdmin, loading } = useAuth();
   const location = useLocation();
 
   if (loading) {
     return (
       <div className="flex min-h-[50vh] items-center justify-center">
-        <LoadingSpinner label="Waa la hubinayaa..." />
+        <LoadingSpinner label={t.common.checking} />
       </div>
     );
   }

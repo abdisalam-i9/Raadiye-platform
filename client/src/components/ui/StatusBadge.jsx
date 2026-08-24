@@ -1,5 +1,5 @@
 import { cn } from '../../utils/cn';
-import { ITEM_STATUS_LABELS } from '../../constants/locations';
+import { useI18n } from '../../context/LanguageContext';
 
 const styles = {
   active: 'bg-forest-light text-forest',
@@ -9,6 +9,7 @@ const styles = {
 };
 
 export default function StatusBadge({ status }) {
+  const { t } = useI18n();
   if (!status) return null;
 
   return (
@@ -18,7 +19,7 @@ export default function StatusBadge({ status }) {
         styles[status] || styles.active
       )}
     >
-      {ITEM_STATUS_LABELS[status] || status}
+      {t.status[status] || status}
     </span>
   );
 }

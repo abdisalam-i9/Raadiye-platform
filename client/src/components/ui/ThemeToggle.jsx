@@ -1,9 +1,10 @@
 import { HiMoon, HiSun } from 'react-icons/hi';
 import { useTheme } from '../../context/ThemeContext';
-import { so } from '../../i18n/so';
+import { useI18n } from '../../context/LanguageContext';
 import { cn } from '../../utils/cn';
 
 export default function ThemeToggle({ className }) {
+  const { t } = useI18n();
   const { isDark, toggleTheme } = useTheme();
 
   return (
@@ -11,24 +12,18 @@ export default function ThemeToggle({ className }) {
       type="button"
       role="switch"
       aria-checked={isDark}
-      aria-label={isDark ? so.a11y.lightMode : so.a11y.darkMode}
-      title={isDark ? so.a11y.lightMode : so.a11y.darkMode}
+      aria-label={isDark ? t.a11y.lightMode : t.a11y.darkMode}
+      title={isDark ? t.a11y.lightMode : t.a11y.darkMode}
       onClick={toggleTheme}
       className={cn(
-        'relative h-9 w-[3.75rem] shrink-0 rounded-full border border-line/80 bg-forest-light p-1 transition duration-300',
-        'hover:border-forest/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest',
+        'grid size-9 shrink-0 place-items-center rounded-full text-ink-soft transition duration-200',
+        'hover:bg-forest-light hover:text-forest',
+        'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest',
         className
       )}
     >
-      <span
-        className={cn(
-          'absolute top-1 left-1 grid size-7 place-items-center rounded-full bg-paper text-clay shadow-sm transition duration-300',
-          isDark && 'translate-x-[1.7rem] bg-paper text-forest'
-        )}
-      >
-        {isDark ? <HiMoon className="size-4" /> : <HiSun className="size-4" />}
-      </span>
-      <span className="sr-only">{so.a11y.toggleTheme}</span>
+      {isDark ? <HiSun className="size-[1.15rem]" /> : <HiMoon className="size-[1.15rem]" />}
+      <span className="sr-only">{t.a11y.toggleTheme}</span>
     </button>
   );
 }

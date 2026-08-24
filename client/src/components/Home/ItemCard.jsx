@@ -2,10 +2,12 @@ import { Link } from 'react-router-dom';
 import { HiOutlineCalendar, HiOutlineLocationMarker } from 'react-icons/hi';
 import { formatDate, getCategoryName } from '../../utils/helpers';
 import { getItemDate, getListing } from '../../constants/listings';
-import CategoryImage from '../ui/CategoryImage';
+import { useI18n } from '../../context/LanguageContext';
+import ItemImage from '../ui/ItemImage';
 import StatusBadge from '../ui/StatusBadge';
 
 export default function ItemCard({ item, kind = 'found' }) {
+  const { t } = useI18n();
   const listing = getListing(kind);
   const location = [item.district, item.village].filter(Boolean).join(' • ');
 
@@ -15,7 +17,7 @@ export default function ItemCard({ item, kind = 'found' }) {
       className="surface card-hover group flex flex-col overflow-hidden"
     >
       <div className="relative overflow-hidden">
-        <CategoryImage
+        <ItemImage
           item={item}
           alt={item.title}
           className="h-48 w-full transition duration-500 group-hover:scale-105"
@@ -37,7 +39,7 @@ export default function ItemCard({ item, kind = 'found' }) {
         <div className="mt-auto flex items-center justify-between gap-3 pt-4 text-xs text-muted">
           <span className="inline-flex min-w-0 items-center gap-1">
             <HiOutlineLocationMarker className="size-3.5 shrink-0" />
-            <span className="truncate">{location || 'Muqdisho'}</span>
+            <span className="truncate">{location || t.common.mogadishu}</span>
           </span>
           <span className="inline-flex shrink-0 items-center gap-1">
             <HiOutlineCalendar className="size-3.5" />
@@ -46,7 +48,7 @@ export default function ItemCard({ item, kind = 'found' }) {
         </div>
 
         <span className="mt-4 inline-flex w-fit items-center rounded-full bg-forest-light px-3 py-1.5 text-sm font-semibold text-forest transition group-hover:bg-forest group-hover:text-white">
-          Faahfaahin
+          {t.common.details}
         </span>
       </div>
     </Link>

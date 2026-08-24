@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { api } from '../services/api';
-import { so } from '../i18n/so';
+import { useI18n } from '../context/LanguageContext';
 import { getErrorMessage } from '../utils/helpers';
 import { usePageTitle } from '../hooks/usePageTitle';
 import Button from '../components/ui/Button';
@@ -11,6 +11,7 @@ import Container from '../components/ui/Container';
 import PageHeader from '../components/ui/PageHeader';
 
 export default function Contact() {
+  const { t } = useI18n();
   const [form, setForm] = useState({
     name: '',
     email: '',
@@ -21,7 +22,7 @@ export default function Contact() {
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
 
-  usePageTitle('Nala soo xiriir — Baafiye');
+  usePageTitle(t.meta.contact);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -36,7 +37,7 @@ export default function Contact() {
 
     try {
       await api.contact.send(form);
-      setSuccess(so.contact.success);
+      setSuccess(t.contact.success);
       setForm({ name: '', email: '', subject: '', message: '' });
     } catch (err) {
       setError(getErrorMessage(err));
@@ -48,7 +49,7 @@ export default function Contact() {
   return (
     <Container className="py-12 sm:py-16">
       <div className="mx-auto max-w-2xl">
-        <PageHeader title={so.contact.title} description={so.contact.body} />
+        <PageHeader title={t.contact.title} description={t.contact.body} />
 
         <form
           onSubmit={handleSubmit}
@@ -57,7 +58,7 @@ export default function Contact() {
           <Input
             id="name"
             name="name"
-            label={so.contact.name}
+            label={t.contact.name}
             required
             value={form.name}
             onChange={handleChange}
@@ -66,7 +67,7 @@ export default function Contact() {
             id="email"
             name="email"
             type="email"
-            label={so.contact.email}
+            label={t.contact.email}
             required
             value={form.email}
             onChange={handleChange}
@@ -74,30 +75,30 @@ export default function Contact() {
           <Input
             id="subject"
             name="subject"
-            label={so.contact.subject}
+            label={t.contact.subject}
             required
             value={form.subject}
             onChange={handleChange}
-            placeholder={so.contact.subjectHint}
+            placeholder={t.contact.subjectHint}
           />
           <Textarea
             id="message"
             name="message"
-            label={so.contact.message}
+            label={t.contact.message}
             required
             rows={7}
             value={form.message}
             onChange={handleChange}
-            placeholder={so.contact.messageHint}
+            placeholder={t.contact.messageHint}
           />
 
           {error && <Alert type="error">{error}</Alert>}
           {success && <Alert type="success">{success}</Alert>}
 
           <Button type="submit" className="w-full" loading={loading} size="lg">
-            {loading ? so.contact.sending : so.contact.send}
+            {loading ? t.contact.sending : t.contact.send}
           </Button>
-          <p className="text-center text-sm text-muted">{so.contact.note}</p>
+          <p className="text-center text-sm text-muted">{t.contact.note}</p>
         </form>
       </div>
     </Container>

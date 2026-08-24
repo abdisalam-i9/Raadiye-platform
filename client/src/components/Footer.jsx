@@ -1,75 +1,129 @@
 import { Link } from 'react-router-dom';
-import { HiOutlineMail, HiOutlinePhone, HiOutlineLocationMarker } from 'react-icons/hi';
+import {
+  HiArrowUp,
+  HiOutlineLocationMarker,
+  HiOutlineMail,
+  HiOutlinePhone,
+  HiPlus,
+  HiSearch,
+} from 'react-icons/hi';
 import { useAuth } from '../context/AuthContext';
-import { so } from '../i18n/so';
+import { useI18n } from '../context/LanguageContext';
 import Brand from './Brand';
+import Button from './ui/Button';
 import Container from './ui/Container';
 
 export default function Footer() {
+  const { t } = useI18n();
   const { isAuthenticated } = useAuth();
 
   const siteLinks = [
-    { to: '/', label: 'Bogga hore' },
-    { to: '/items', label: so.nav.items },
-    { to: '/lost-items', label: so.nav.lostItems },
-    { to: '/about', label: so.nav.about },
+    { to: '/', label: t.common.homePage },
+    { to: '/items', label: t.nav.items },
+    { to: '/lost-items', label: t.nav.lostItems },
+    { to: '/about', label: t.nav.about },
   ];
 
   const helpLinks = [
-    { to: '/services', label: so.nav.how },
-    { to: '/contact', label: so.nav.contact },
-    { to: '/items', label: so.actions.search },
+    { to: '/services', label: t.nav.how },
+    { to: '/contact', label: t.nav.contact },
+    { to: '/items', label: t.actions.search },
   ];
 
   const accountLinks = isAuthenticated
     ? [
-        { to: '/my-items', label: so.nav.myItems },
-        { to: '/post-item', label: so.nav.postFound },
-        { to: '/post-lost', label: so.nav.postLost },
+        { to: '/my-items', label: t.nav.myItems },
+        { to: '/post-item', label: t.nav.postFound },
+        { to: '/post-lost', label: t.nav.postLost },
       ]
     : [
-        { to: '/login', label: so.nav.login },
-        { to: '/register', label: so.nav.register },
-        { to: '/post-item', label: so.nav.postFound },
-        { to: '/post-lost', label: so.nav.postLost },
+        { to: '/login', label: t.nav.login },
+        { to: '/register', label: t.nav.register },
+        { to: '/post-item', label: t.nav.postFound },
+        { to: '/post-lost', label: t.nav.postLost },
       ];
 
+  const scrollTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
-    <footer className="mt-auto bg-[#08140f] text-white/75">
-      <Container>
-        <div className="grid grid-cols-1 gap-10 py-14 sm:grid-cols-2 lg:grid-cols-4">
-          <div>
+    <footer className="site-footer mt-auto text-white/75">
+      <div
+        className="h-px bg-gradient-to-r from-transparent via-forest/70 to-transparent"
+        aria-hidden="true"
+      />
+
+      <Container className="pt-10">
+        <div className="relative overflow-hidden rounded-[1.7rem] border border-white/10 bg-white/[0.04] px-5 py-6 shadow-[inset_0_1px_0_rgb(255_255_255_/_0.06)] sm:px-7 sm:py-7">
+          <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+            <div className="max-w-xl">
+              <p className="font-display text-2xl text-white">{t.footer.tagline}</p>
+              <p className="mt-2 text-sm leading-7 text-white/70">{t.footer.blurb}</p>
+            </div>
+            <div className="flex flex-wrap gap-2.5">
+              <Button
+                as={Link}
+                to="/post-item"
+                size="sm"
+                className="!bg-white !text-forest shadow-[0_10px_24px_rgb(0_0_0_/_0.28)] hover:!bg-cream hover:!text-forest-dark"
+              >
+                <HiPlus className="size-4" />
+                {t.nav.post}
+              </Button>
+              <Button as={Link} to="/items" variant="onDark" size="sm">
+                <HiSearch className="size-4" />
+                {t.actions.search}
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 gap-10 py-12 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="sm:col-span-2 lg:col-span-1">
             <Brand light />
-            <p className="mt-4 max-w-xs text-sm leading-7 text-white/70">{so.footer.blurb}</p>
+            <div className="mt-5 grid gap-2.5">
+              <a href="mailto:hello@baafiye.org" className="footer-chip">
+                <span className="grid size-9 place-items-center rounded-xl bg-forest/20 text-forest">
+                  <HiOutlineMail className="size-4" />
+                </span>
+                hello@baafiye.org
+              </a>
+              <a href="tel:+252610000000" className="footer-chip">
+                <span className="grid size-9 place-items-center rounded-xl bg-clay/20 text-clay">
+                  <HiOutlinePhone className="size-4" />
+                </span>
+                +252 61 000 0000
+              </a>
+              <span className="footer-chip">
+                <span className="grid size-9 place-items-center rounded-xl bg-white/10 text-white">
+                  <HiOutlineLocationMarker className="size-4" />
+                </span>
+                {t.common.mogadishuSomalia}
+              </span>
+            </div>
           </div>
 
-          <FooterColumn title={so.footer.site} links={siteLinks} />
-          <FooterColumn title={so.footer.help} links={helpLinks} />
-          <FooterColumn title={so.footer.account} links={accountLinks} />
+          <FooterColumn title={t.footer.site} links={siteLinks} />
+          <FooterColumn title={t.footer.help} links={helpLinks} />
+          <FooterColumn title={t.footer.account} links={accountLinks} />
         </div>
 
-        <div className="flex flex-col gap-4 border-t border-white/10 py-6 text-sm sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex flex-wrap gap-x-5 gap-y-2">
-            <a href="mailto:hello@baafiye.org" className="inline-flex items-center gap-1.5 transition hover:text-white">
-              <HiOutlineMail />
-              hello@baafiye.org
-            </a>
-            <a href="tel:+252610000000" className="inline-flex items-center gap-1.5 transition hover:text-white">
-              <HiOutlinePhone />
-              +252 61 000 0000
-            </a>
-            <span className="inline-flex items-center gap-1.5">
-              <HiOutlineLocationMarker />
-              Muqdisho, Soomaaliya
-            </span>
-          </div>
-        </div>
-
-        <div className="flex flex-col gap-2 border-t border-white/10 py-5 text-xs text-white/55 sm:flex-row sm:items-center sm:justify-between">
-          <p>
-            &copy; {new Date().getFullYear()} {so.brand}. {so.footer.credit}
+        <div className="flex flex-col gap-4 border-t border-white/10 py-6 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-sm text-white/55">
+            &copy; {new Date().getFullYear()} {t.brand}. {t.footer.credit}
           </p>
-          <p>{so.footer.tagline}</p>
+          <div className="flex items-center gap-3">
+            <p className="text-sm text-white/55">{t.footer.tagline}</p>
+            <button
+              type="button"
+              onClick={scrollTop}
+              className="grid size-10 place-items-center rounded-full border border-white/12 bg-white/8 text-white transition hover:border-forest/40 hover:bg-forest/20"
+              aria-label={t.a11y.backToTop}
+            >
+              <HiArrowUp className="size-4" />
+            </button>
+          </div>
         </div>
       </Container>
     </footer>
@@ -79,11 +133,13 @@ export default function Footer() {
 function FooterColumn({ title, links }) {
   return (
     <div>
-      <h2 className="font-sans text-sm font-semibold uppercase tracking-wider text-white">{title}</h2>
+      <h2 className="font-sans text-xs font-semibold uppercase tracking-[0.18em] text-white/90">
+        {title}
+      </h2>
       <ul className="mt-4 space-y-2.5 text-sm">
         {links.map(({ to, label }) => (
           <li key={`${to}-${label}`}>
-            <Link to={to} className="transition hover:text-white">
+            <Link to={to} className="footer-link">
               {label}
             </Link>
           </li>

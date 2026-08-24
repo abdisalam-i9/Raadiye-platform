@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { HiPhone } from 'react-icons/hi';
 import Button from './Button';
-import { so } from '../../i18n/so';
+import { useI18n } from '../../context/LanguageContext';
 import { useToast } from '../../context/ToastContext';
 
 export default function ContactFounder({ phone, kind = 'found' }) {
+  const { t } = useI18n();
   const [revealed, setRevealed] = useState(false);
   const { showToast } = useToast();
   const isLost = kind === 'lost';
@@ -12,9 +13,9 @@ export default function ContactFounder({ phone, kind = 'found' }) {
   const copyNumber = async () => {
     try {
       await navigator.clipboard.writeText(phone);
-      showToast(so.detail.copied);
+      showToast(t.detail.copied);
     } catch {
-      showToast(so.errors.generic, 'error');
+      showToast(t.errors.generic, 'error');
     }
   };
 
@@ -24,16 +25,16 @@ export default function ContactFounder({ phone, kind = 'found' }) {
     return (
       <div className="rounded-[1.35rem] border border-forest/15 bg-forest-light/80 p-5">
         <h2 className="text-lg font-semibold text-ink">
-          {isLost ? so.actions.contactOwner : so.actions.contactFinder}
+          {isLost ? t.actions.contactOwner : t.actions.contactFinder}
         </h2>
         <p className="mt-2 text-sm leading-6 text-ink-soft">
-          {isLost ? so.detail.contactHintLost : so.detail.contactHint}
+          {isLost ? t.detail.contactHintLost : t.detail.contactHint}
         </p>
         <Button type="button" className="mt-4" onClick={() => setRevealed(true)}>
           <HiPhone className="size-4" />
-          {isLost ? so.detail.revealOwner : so.detail.reveal}
+          {isLost ? t.detail.revealOwner : t.detail.reveal}
         </Button>
-        <p className="mt-3 text-xs leading-5 text-muted">{so.detail.contactSafety}</p>
+        <p className="mt-3 text-xs leading-5 text-muted">{t.detail.contactSafety}</p>
       </div>
     );
   }
@@ -41,19 +42,19 @@ export default function ContactFounder({ phone, kind = 'found' }) {
   return (
     <div className="rounded-[1.35rem] border border-forest/15 bg-forest-light/80 p-5">
       <p className="text-sm font-semibold text-forest">
-        {isLost ? so.detail.ownerPhone : so.detail.finderPhone}
+        {isLost ? t.detail.ownerPhone : t.detail.finderPhone}
       </p>
       <p className="mt-2 font-display text-2xl text-ink">{phone}</p>
       <div className="mt-4 flex flex-wrap gap-3">
         <Button as="a" href={`tel:${phone.replace(/\s/g, '')}`}>
           <HiPhone className="size-4" />
-          {isLost ? so.detail.callOwner : so.detail.call}
+          {isLost ? t.detail.callOwner : t.detail.call}
         </Button>
         <Button type="button" variant="outline" onClick={copyNumber}>
-          {so.detail.copy}
+          {t.detail.copy}
         </Button>
       </div>
-      <p className="mt-3 text-xs leading-5 text-muted">{so.detail.contactSafety}</p>
+      <p className="mt-3 text-xs leading-5 text-muted">{t.detail.contactSafety}</p>
     </div>
   );
 }

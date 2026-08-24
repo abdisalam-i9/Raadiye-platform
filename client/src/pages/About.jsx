@@ -1,20 +1,21 @@
 import { HiOutlineSearch, HiOutlineHeart, HiOutlineShieldCheck, HiOutlineUsers } from 'react-icons/hi';
-import { so } from '../i18n/so';
+import { useI18n } from '../context/LanguageContext';
 import { usePageTitle } from '../hooks/usePageTitle';
 import Container from '../components/ui/Container';
 
 export default function About() {
-  usePageTitle('Nagu saabsan — Baafiye');
+  const { t } = useI18n();
+  usePageTitle(t.meta.about);
 
   return (
     <div>
       <section className="border-b border-white/60 dark:border-white/10">
         <Container className="py-14 sm:py-16">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-forest">
-            {so.about.eyebrow}
+            {t.about.eyebrow}
           </p>
-          <h1 className="mt-3 max-w-2xl text-ink">{so.about.title}</h1>
-          <p className="mt-4 max-w-2xl text-lg leading-8 text-ink-soft">{so.about.intro}</p>
+          <h1 className="mt-3 max-w-2xl text-ink">{t.about.title}</h1>
+          <p className="mt-4 max-w-2xl text-lg leading-8 text-ink-soft">{t.about.intro}</p>
         </Container>
       </section>
 
@@ -23,18 +24,18 @@ export default function About() {
           <div className="grid items-start gap-12 lg:grid-cols-2">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-forest">
-                {so.about.what}
+                {t.about.what}
               </p>
-              <h2 className="mt-3 text-ink">{so.about.whatTitle}</h2>
-              <p className="mt-4 leading-7 text-ink-soft">{so.about.whatP1}</p>
-              <p className="mt-3 leading-7 text-ink-soft">{so.about.whatP2}</p>
+              <h2 className="mt-3 text-ink">{t.about.whatTitle}</h2>
+              <p className="mt-4 leading-7 text-ink-soft">{t.about.whatP1}</p>
+              <p className="mt-3 leading-7 text-ink-soft">{t.about.whatP2}</p>
             </div>
 
             <div className="grid gap-4 sm:grid-cols-2">
-              <Fact icon={HiOutlineSearch} title={so.about.find} text={so.about.findBody} />
-              <Fact icon={HiOutlineHeart} title={so.about.return} text={so.about.returnBody} />
-              <Fact icon={HiOutlineUsers} title={so.about.community} text={so.about.communityBody} />
-              <Fact icon={HiOutlineShieldCheck} title={so.about.trust} text={so.about.trustBody} />
+              <Fact icon={HiOutlineSearch} title={t.about.find} text={t.about.findBody} />
+              <Fact icon={HiOutlineHeart} title={t.about.return} text={t.about.returnBody} />
+              <Fact icon={HiOutlineUsers} title={t.about.community} text={t.about.communityBody} />
+              <Fact icon={HiOutlineShieldCheck} title={t.about.trust} text={t.about.trustBody} />
             </div>
           </div>
         </Container>
@@ -43,29 +44,29 @@ export default function About() {
       <section className="border-y border-line bg-paper/40 section-y">
         <Container>
           <p className="text-center text-xs font-semibold uppercase tracking-[0.18em] text-forest">
-            {so.about.how}
+            {t.about.how}
           </p>
-          <h2 className="mt-3 text-center text-ink">{so.about.howTitle}</h2>
+          <h2 className="mt-3 text-center text-ink">{t.about.howTitle}</h2>
           <div className="mt-10 grid gap-6 md:grid-cols-3">
-            <Step number="1" title={so.about.step1} text={so.about.step1Body} />
-            <Step number="2" title={so.about.step2} text={so.about.step2Body} />
-            <Step number="3" title={so.about.step3} text={so.about.step3Body} />
+            <Step number="1" title={t.about.step1} text={t.about.step1Body} />
+            <Step number="2" title={t.about.step2} text={t.about.step2Body} />
+            <Step number="3" title={t.about.step3} text={t.about.step3Body} />
           </div>
         </Container>
       </section>
 
       <section className="relative overflow-hidden bg-forest text-white section-y">
         <Container className="max-w-3xl text-center">
-          <h2 className="text-white">{so.about.mission}</h2>
-          <p className="mt-4 text-lg leading-8 text-white/80">{so.about.missionBody}</p>
+          <h2 className="text-white">{t.about.mission}</h2>
+          <p className="mt-4 text-lg leading-8 text-white/80">{t.about.missionBody}</p>
         </Container>
       </section>
 
       <section className="section-y">
         <Container>
           <div className="surface p-6">
-            <h3 className="text-ink">{so.about.closeTitle}</h3>
-            <p className="mt-2 text-ink-soft">{so.about.closeBody}</p>
+            <h3 className="text-ink">{t.about.closeTitle}</h3>
+            <p className="mt-2 text-ink-soft">{t.about.closeBody}</p>
           </div>
         </Container>
       </section>

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { api, listingApi } from '../services/api';
 import { useToast } from '../context/ToastContext';
-import { so } from '../i18n/so';
+import { useI18n } from '../context/LanguageContext';
 import { getListing, getItemDate } from '../constants/listings';
 import {
   formatDate,
@@ -16,16 +16,12 @@ import Button from '../components/ui/Button';
 import Container from '../components/ui/Container';
 import PageHeader from '../components/ui/PageHeader';
 import StatusBadge from '../components/ui/StatusBadge';
-import CategoryImage from '../components/ui/CategoryImage';
+import ItemImage from '../components/ui/ItemImage';
 import { ConfirmModal } from '../components/ui/Modal';
 import { cn } from '../utils/cn';
 
-const TABS = [
-  { id: 'found', label: so.nav.items },
-  { id: 'lost', label: so.nav.lostItems },
-];
-
 export default function MyItems() {
+  const { t } = useI18n();
   const [params] = useSearchParams();
   const [tab, setTab] = useState(params.get('tab') === 'lost' ? 'lost' : 'found');
   const [foundItems, setFoundItems] = useState([]);
@@ -36,7 +32,12 @@ export default function MyItems() {
   const [confirm, setConfirm] = useState(null);
   const { showToast } = useToast();
 
-  usePageTitle('Alaabtayda — Baafiye');
+  usePageTitle(t.meta.myItems);
+
+  const TABS = [
+    { id: 'found', label: t.nav.items },
+    { id: 'lost', label: t.nav.lostItems },
+  ];
 
   const listing = getListing(tab);
   const items = tab === 'lost' ? lostItems : foundItems;
@@ -54,7 +55,7 @@ export default function MyItems() {
       setFoundItems(foundData.items || []);
       setLostItems(lostData.items || []);
     } catch (err) {
-      setError(getErrorMessage(err, so.errors.generic));
+      setError(getErrorMessage(err, t.errors.generic));
     } finally {
       setLoading(false);
     }
@@ -76,9 +77,9 @@ export default function MyItems() {
     try {
       await listingApi(kind).delete(id);
       setItemsForTab(kind, (current) => current.filter((item) => item._id !== id));
-      showToast('Shayga waa laga saaray raadinta');
+      showToast(t.myItems.removed);
     } catch (err) {
-      showToast(getErrorMessage(err, so.errors.generic), 'error');
+      showToast(getErrorMessage(err, t.errors.generic), 'error');
     } finally {
       setActionId('');
       setConfirm(null);
@@ -92,13 +93,9 @@ export default function MyItems() {
       setItemsForTab(kind, (current) =>
         current.map((item) => (item._id === id ? data.item : item))
       );
-      showToast(
-        kind === 'lost'
-          ? 'Shayga waxaa loo calaamadeeyay in la helay'
-          : 'Shayga waxaa loo calaamadeeyay in la celiyay'
-      );
+      showToast(kind === 'lost' ? t.myItems.markedFound : t.myItems.markedReturned);
     } catch (err) {
-      showToast(getErrorMessage(err, so.errors.generic), 'error');
+      showToast(getErrorMessage(err, t.errors.generic), 'error');
     } finally {
       setActionId('');
     }
@@ -119,15 +116,15 @@ export default function MyItems() {
   return (
     <Container className="py-10 sm:py-14">
       <PageHeader
-        title={so.nav.myItems}
-        description={so.empty.myItemsBody}
+        title={t.nav.myItems}
+        description={t.empty.myItemsBody}
         action={
           <div className="flex flex-wrap gap-2">
             <Button as={Link} to="/post-item" size="sm">
-              {so.actions.postFound}
+              {t.actions.postFound}
             </Button>
             <Button as={Link} to="/post-lost" variant="outline" size="sm">
-              {so.actions.postLost}
+              {t.actions.postLost}
             </Button>
           </div>
         }
@@ -155,11 +152,11 @@ export default function MyItems() {
 
       {!items.length ? (
         <EmptyState
-          title={isLost ? so.empty.myLostTitle : so.empty.myItemsTitle}
-          description={isLost ? so.empty.myLostBody : so.empty.myItemsBody}
+          title={isLost ? t.empty.myLostTitle : t.empty.myItemsTitle}
+          description={isLost ? t.empty.myLostBody : t.empty.myItemsBody}
           action={
             <Button as={Link} to={listing.postPath}>
-              {isLost ? so.actions.postLost : so.actions.postFound}
+              {isLost ? t.actions.postLost : t.actions.postFound}
             </Button>
           }
         />
@@ -170,7 +167,7 @@ export default function MyItems() {
               key={item._id}
               className="surface overflow-hidden sm:flex"
             >
-              <CategoryImage
+              <ItemImage
                 item={item}
                 alt={item.title}
                 className="h-48 w-full sm:h-auto sm:w-56"
@@ -192,7 +189,7 @@ export default function MyItems() {
                   {item.status === 'active' ? (
                     <>
                       <Button as={Link} to={`${listing.listPath}/${item._id}`} variant="outline" size="sm">
-                        {so.actions.view}
+                        {t.actions.view}
                       </Button>
                       <Button
                         type="button"
@@ -200,7 +197,7 @@ export default function MyItems() {
                         disabled={actionId === item._id}
                         onClick={() => handleMarkReturned(item._id, tab)}
                       >
-                        {isLost ? so.actions.markFound : so.actions.markReturned}
+                        {isLost ? t.actions.markFound : t.actions.markReturned}
                       </Button>
                       <Button
                         type="button"
@@ -209,13 +206,11 @@ export default function MyItems() {
                         disabled={actionId === item._id}
                         onClick={() => setConfirm({ id: item._id, kind: tab })}
                       >
-                        {so.actions.cancel}
+                        {t.actions.cancel}
                       </Button>
                     </>
                   ) : (
-                    <p className="text-sm text-muted">
-                      Shaygan hadda kama soo muuqanayo raadinta dadweynaha.
-                    </p>
+                    <p className="text-sm text-muted">{t.myItems.hiddenFromSearch}</p>
                   )}
                 </div>
               </div>
@@ -230,10 +225,10 @@ export default function MyItems() {
         onConfirm={handleDelete}
         danger
         loading={Boolean(actionId)}
-        title="Ma hubtaa inaad rabto inaad ka saarto shaygan?"
-        description="Ficilkan wuxuu ka dhigayaa shayga mid aan dadku ka raadin karin."
-        confirmLabel="Haa, ka saar"
-        cancelLabel="Ka noqo"
+        title={t.myItems.confirmRemoveTitle}
+        description={t.myItems.confirmRemoveBody}
+        confirmLabel={t.myItems.confirmRemove}
+        cancelLabel={t.common.dismiss}
       />
     </Container>
   );

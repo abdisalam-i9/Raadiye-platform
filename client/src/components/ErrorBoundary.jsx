@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { so } from '../i18n/so';
+import { getT } from '../i18n';
 import Button from './ui/Button';
 
 export default class ErrorBoundary extends Component {
@@ -18,12 +18,13 @@ export default class ErrorBoundary extends Component {
 
   render() {
     if (this.state.hasError) {
+      const t = getT();
       return (
         <div className="flex min-h-[50vh] flex-col items-center justify-center px-4 text-center">
-          <h1 className="font-display text-3xl text-ink">{so.errors.generic.split('.')[0]}.</h1>
-          <p className="mt-3 text-ink-soft">{so.errors.generic}</p>
+          <h1 className="font-display text-3xl text-ink">{t.errorBoundary.title}</h1>
+          <p className="mt-3 text-ink-soft">{t.errors.generic}</p>
           <Button type="button" className="mt-6" onClick={() => window.location.reload()}>
-            Isku day mar kale
+            {t.errorBoundary.retry}
           </Button>
         </div>
       );

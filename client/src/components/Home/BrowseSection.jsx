@@ -15,9 +15,10 @@ import { useDebounce } from '../../hooks/useDebounce';
 import { listingApi } from '../../services/api';
 import { DISTRICTS } from '../../constants/locations';
 import { getListing } from '../../constants/listings';
-import { so } from '../../i18n/so';
+import { useI18n } from '../../context/LanguageContext';
 
 export default function BrowseSection({ kind = 'found' }) {
+  const { t } = useI18n();
   const listing = getListing(kind);
   const isLost = kind === 'lost';
   const { categories, loading: categoriesLoading } = useCategories();
@@ -129,13 +130,13 @@ export default function BrowseSection({ kind = 'found' }) {
     <section className="section-y">
       <Container>
         <PageHeader
-          title={isLost ? so.browse.lostTitle : so.browse.foundTitle}
-          description={isLost ? so.browse.lostBody : so.browse.foundBody}
+          title={isLost ? t.browse.lostTitle : t.browse.foundTitle}
+          description={isLost ? t.browse.lostBody : t.browse.foundBody}
         />
 
         <div className="glass relative rounded-2xl">
           <label htmlFor="browse-search" className="sr-only">
-            Raadi shay
+            {t.common.searchLabel}
           </label>
           <FaSearch className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-muted" />
           <input
@@ -143,7 +144,7 @@ export default function BrowseSection({ kind = 'found' }) {
             type="search"
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
-            placeholder="Raadi shay..."
+            placeholder={t.common.searchPlaceholder}
             className="h-12 w-full rounded-2xl bg-transparent pl-11 pr-4 text-sm outline-none"
           />
         </div>
@@ -157,18 +158,18 @@ export default function BrowseSection({ kind = 'found' }) {
             aria-expanded={filtersOpen}
           >
             <HiAdjustments className="size-4" />
-            Shaandho
+            {t.common.filter}
           </Button>
         </div>
 
         <div className={`mt-4 grid gap-3 rounded-[1.35rem] border border-white/70 bg-paper/50 p-4 backdrop-blur md:grid-cols-3 dark:border-white/10 dark:bg-paper/60 ${filtersOpen ? 'grid' : 'hidden md:grid'}`}>
           <Select
-            label="Qaybta"
+            label={t.common.category}
             value={category}
             onChange={(e) => setFilter('category', e.target.value)}
             disabled={categoriesLoading}
           >
-            <option value="">Dhammaan qaybaha</option>
+            <option value="">{t.common.allCategories}</option>
             {categories.map((cat) => (
               <option key={cat._id} value={cat._id}>
                 {cat.name}
@@ -177,11 +178,11 @@ export default function BrowseSection({ kind = 'found' }) {
           </Select>
 
           <Select
-            label="Degmo"
+            label={t.common.district}
             value={district}
             onChange={(e) => setFilter('district', e.target.value)}
           >
-            <option value="">Dhammaan degmooyinka</option>
+            <option value="">{t.common.allDistricts}</option>
             {DISTRICTS.map((name) => (
               <option key={name} value={name}>
                 {name}
@@ -190,33 +191,33 @@ export default function BrowseSection({ kind = 'found' }) {
           </Select>
 
           <Input
-            label="Xaafad"
+            label={t.common.village}
             value={villageInput}
             onChange={(e) => setVillageInput(e.target.value)}
-            placeholder="Tusaale: KM4"
+            placeholder={t.common.villagePlaceholder}
           />
         </div>
 
         <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
           <p className="text-sm text-muted">
             {pagination
-              ? `${pagination.totalItems} ${isLost ? so.browse.lostCount : so.browse.foundCount}`
+              ? `${pagination.totalItems} ${isLost ? t.browse.lostCount : t.browse.foundCount}`
               : loading
-                ? 'Waa la raadinayaa...'
+                ? t.common.searching
                 : ''}
           </p>
           {hasFilters && (
             <Button type="button" variant="ghost" size="sm" onClick={clearFilters}>
-              {so.actions.clearFilters}
+              {t.actions.clearFilters}
             </Button>
           )}
         </div>
 
         {error && (
           <div className="mt-8 surface p-8 text-center">
-            <p className="text-ink-soft">{so.errors.browse}</p>
+            <p className="text-ink-soft">{t.errors.browse}</p>
             <Button type="button" className="mt-4" onClick={fetchItems}>
-              Mar kale isku day
+              {t.common.retry}
             </Button>
           </div>
         )}
@@ -238,11 +239,11 @@ export default function BrowseSection({ kind = 'found' }) {
                 emptyAction={
                   hasFilters ? (
                     <Button type="button" onClick={clearFilters}>
-                      {so.actions.clearFilters}
+                      {t.actions.clearFilters}
                     </Button>
                   ) : (
                     <Button as={Link} to={listing.postPath}>
-                      {isLost ? so.actions.postLost : so.actions.postFound}
+                      {isLost ? t.actions.postLost : t.actions.postFound}
                     </Button>
                   )
                 }
