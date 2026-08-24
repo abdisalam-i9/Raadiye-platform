@@ -1,7 +1,15 @@
-import Page from '../components/Page';
+import Hero from "../components/Home/Hero";
+import BrowseSection from "../components/Home/BrowseSection";
 
-function Home() {
-  return <Page title="Home" />;
-}
+const Home = () => {
+  return (
+    <>
+      <main>
+        <Hero />
+        <BrowseSection />
+      </main>
+    </>
+  );
+};
 
 export default Home;
