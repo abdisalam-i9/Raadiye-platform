@@ -35,12 +35,12 @@ export default function Footer() {
       ];
 
   return (
-    <footer className="mt-auto border-t border-line bg-paper">
+    <footer className="mt-auto bg-ink text-paper/75">
       <Container>
-        <div className="grid grid-cols-1 gap-10 py-12 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-10 py-14 sm:grid-cols-2 lg:grid-cols-4">
           <div>
-            <Brand />
-            <p className="mt-4 max-w-xs text-sm leading-7 text-ink-soft">{so.footer.blurb}</p>
+            <Brand light />
+            <p className="mt-4 max-w-xs text-sm leading-7 text-paper/70">{so.footer.blurb}</p>
           </div>
 
           <FooterColumn title={so.footer.site} links={siteLinks} />
@@ -48,13 +48,13 @@ export default function Footer() {
           <FooterColumn title={so.footer.account} links={accountLinks} />
         </div>
 
-        <div className="flex flex-col gap-4 border-t border-line py-6 text-sm text-muted sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-4 border-t border-white/10 py-6 text-sm sm:flex-row sm:items-center sm:justify-between">
           <div className="flex flex-wrap gap-x-5 gap-y-2">
-            <a href="mailto:hello@baafiye.org" className="inline-flex items-center gap-1.5 hover:text-forest">
+            <a href="mailto:hello@baafiye.org" className="inline-flex items-center gap-1.5 transition hover:text-paper">
               <HiOutlineMail />
               hello@baafiye.org
             </a>
-            <a href="tel:+252610000000" className="inline-flex items-center gap-1.5 hover:text-forest">
+            <a href="tel:+252610000000" className="inline-flex items-center gap-1.5 transition hover:text-paper">
               <HiOutlinePhone />
               +252 61 000 0000
             </a>
@@ -65,7 +65,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="flex flex-col gap-2 border-t border-line py-5 text-xs text-muted sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-2 border-t border-white/10 py-5 text-xs text-paper/55 sm:flex-row sm:items-center sm:justify-between">
           <p>
             &copy; {new Date().getFullYear()} {so.brand}. {so.footer.credit}
           </p>
@@ -79,11 +79,11 @@ export default function Footer() {
 function FooterColumn({ title, links }) {
   return (
     <div>
-      <h2 className="font-sans text-sm font-semibold uppercase tracking-wider text-ink">{title}</h2>
+      <h2 className="font-sans text-sm font-semibold uppercase tracking-wider text-paper">{title}</h2>
       <ul className="mt-4 space-y-2.5 text-sm">
         {links.map(({ to, label }) => (
           <li key={`${to}-${label}`}>
-            <Link to={to} className="text-ink-soft transition hover:text-forest">
+            <Link to={to} className="transition hover:text-paper">
               {label}
             </Link>
           </li>

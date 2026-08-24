@@ -22,6 +22,17 @@ function navClass({ isActive }) {
   return cn('nav-link', isActive && 'nav-link-active');
 }
 
+function getInitials(name) {
+  if (!name) return 'B';
+  return name
+    .split(' ')
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0])
+    .join('')
+    .toUpperCase();
+}
+
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [userOpen, setUserOpen] = useState(false);
@@ -85,9 +96,9 @@ export default function Header() {
   }, [userOpen]);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-line/80 bg-paper/95 backdrop-blur-md">
+    <header className="sticky top-0 z-50 border-b border-white/50 bg-paper/70 shadow-[0_8px_30px_rgb(16_35_27_/_0.04)] backdrop-blur-xl">
       <Container>
-        <div className="flex h-[4.25rem] items-center justify-between gap-3">
+        <div className="flex h-[4.35rem] items-center justify-between gap-3">
           <Brand onClick={closeMenu} />
 
           <nav className="hidden items-center gap-0.5 lg:flex" aria-label="Hagaajinta ugu weyn">
@@ -111,25 +122,28 @@ export default function Header() {
               <div className="relative" ref={userMenuRef}>
                 <button
                   type="button"
-                  className="inline-flex max-w-[180px] items-center gap-1 rounded-xl px-3 py-2 text-sm font-semibold text-ink hover:bg-cream"
+                  className="inline-flex max-w-[200px] items-center gap-2 rounded-full py-1 pl-1 pr-3 text-sm font-semibold text-ink transition hover:bg-forest-light/70"
                   aria-expanded={userOpen}
                   aria-haspopup="menu"
                   aria-label={so.a11y.openAccount}
                   onClick={() => setUserOpen((open) => !open)}
                 >
+                  <span className="grid size-8 place-items-center rounded-full bg-forest text-[11px] font-bold text-paper">
+                    {getInitials(user?.name || user?.email)}
+                  </span>
                   <span className="truncate">{user?.name || user?.email}</span>
-                  <HiChevronDown className="size-4 shrink-0" />
+                  <HiChevronDown className={cn('size-4 shrink-0 transition', userOpen && 'rotate-180')} />
                 </button>
 
                 {userOpen && (
                   <div
                     role="menu"
-                    className="absolute right-0 mt-2 w-52 rounded-2xl border border-line bg-paper p-1.5 shadow-lift"
+                    className="surface absolute right-0 mt-2 w-56 p-1.5"
                   >
                     <Link
                       to="/my-items"
                       role="menuitem"
-                      className="block rounded-xl px-3 py-2.5 text-sm font-medium text-ink hover:bg-cream"
+                      className="block rounded-xl px-3 py-2.5 text-sm font-medium text-ink transition hover:bg-forest-light/70"
                       onClick={() => setUserOpen(false)}
                     >
                       {so.nav.myItems}
@@ -137,7 +151,7 @@ export default function Header() {
                     <Link
                       to="/post-item"
                       role="menuitem"
-                      className="block rounded-xl px-3 py-2.5 text-sm font-medium text-ink hover:bg-cream"
+                      className="block rounded-xl px-3 py-2.5 text-sm font-medium text-ink transition hover:bg-forest-light/70"
                       onClick={() => setUserOpen(false)}
                     >
                       {so.nav.postFound}
@@ -145,7 +159,7 @@ export default function Header() {
                     <Link
                       to="/post-lost"
                       role="menuitem"
-                      className="block rounded-xl px-3 py-2.5 text-sm font-medium text-ink hover:bg-cream"
+                      className="block rounded-xl px-3 py-2.5 text-sm font-medium text-ink transition hover:bg-forest-light/70"
                       onClick={() => setUserOpen(false)}
                     >
                       {so.nav.postLost}
@@ -154,7 +168,7 @@ export default function Header() {
                       <Link
                         to="/admin/categories"
                         role="menuitem"
-                        className="block rounded-xl px-3 py-2.5 text-sm font-medium text-ink hover:bg-cream"
+                        className="block rounded-xl px-3 py-2.5 text-sm font-medium text-ink transition hover:bg-forest-light/70"
                         onClick={() => setUserOpen(false)}
                       >
                         {so.nav.admin}
@@ -163,7 +177,7 @@ export default function Header() {
                     <button
                       type="button"
                       role="menuitem"
-                      className="flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-left text-sm font-medium text-danger hover:bg-danger-light"
+                      className="flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-left text-sm font-medium text-danger transition hover:bg-danger-light"
                       onClick={handleLogout}
                     >
                       <HiLogout className="size-4" />
@@ -187,7 +201,7 @@ export default function Header() {
           <div className="flex items-center gap-1 lg:hidden">
             <Link
               to="/items"
-              className="rounded-xl p-2 text-ink hover:bg-cream"
+              className="rounded-full p-2 text-ink transition hover:bg-forest-light/70"
               aria-label={so.a11y.search}
             >
               <HiSearch className="size-5" />
@@ -195,7 +209,7 @@ export default function Header() {
             <button
               ref={menuButtonRef}
               type="button"
-              className="rounded-xl p-2 text-ink hover:bg-cream"
+              className="rounded-full p-2 text-ink transition hover:bg-forest-light/70"
               aria-label={so.a11y.openMenu}
               aria-expanded={menuOpen}
               aria-controls="mobile-menu"
@@ -210,20 +224,20 @@ export default function Header() {
       {menuOpen && (
         <div className="lg:hidden">
           <div
-            className="fixed inset-0 z-40 bg-ink/40"
+            className="fixed inset-0 z-40 bg-ink/40 backdrop-blur-sm"
             onClick={closeMenu}
             aria-hidden="true"
           />
           <aside
             id="mobile-menu"
-            className="fixed inset-y-0 left-0 z-50 flex h-screen w-[min(20rem,88%)] flex-col bg-paper shadow-lift"
+            className="animate-drawer glass fixed inset-y-0 left-0 z-50 flex h-screen w-[min(20rem,88%)] flex-col shadow-lift"
           >
-            <div className="flex h-[4.25rem] items-center justify-between border-b border-line px-4">
+            <div className="flex h-[4.35rem] items-center justify-between border-b border-line/70 px-4">
               <Brand compact onClick={closeMenu} />
               <button
                 ref={closeButtonRef}
                 type="button"
-                className="rounded-xl p-2 text-ink hover:bg-cream"
+                className="rounded-full p-2 text-ink hover:bg-forest-light/70"
                 aria-label={so.a11y.closeMenu}
                 onClick={() => {
                   closeMenu();
@@ -243,7 +257,7 @@ export default function Header() {
                   onClick={closeMenu}
                   className={({ isActive }) =>
                     cn(
-                      'rounded-xl px-4 py-3 text-sm font-semibold',
+                      'rounded-2xl px-4 py-3 text-sm font-semibold transition',
                       isActive ? 'bg-forest-light text-forest' : 'text-ink hover:bg-cream'
                     )
                   }
@@ -252,7 +266,7 @@ export default function Header() {
                 </NavLink>
               ))}
 
-              <div className="my-3 border-t border-line" />
+              <div className="my-3 border-t border-line/80" />
 
               <Button as={Link} to="/post-item" className="w-full" onClick={closeMenu}>
                 <HiPlus className="size-4" />
@@ -269,7 +283,7 @@ export default function Header() {
                   <Link
                     to="/my-items"
                     onClick={closeMenu}
-                    className="rounded-xl px-4 py-3 text-sm font-semibold text-ink hover:bg-cream"
+                    className="rounded-2xl px-4 py-3 text-sm font-semibold text-ink hover:bg-cream"
                   >
                     {so.nav.myItems}
                   </Link>
@@ -277,7 +291,7 @@ export default function Header() {
                     <Link
                       to="/admin/categories"
                       onClick={closeMenu}
-                      className="rounded-xl px-4 py-3 text-sm font-semibold text-ink hover:bg-cream"
+                      className="rounded-2xl px-4 py-3 text-sm font-semibold text-ink hover:bg-cream"
                     >
                       {so.nav.admin}
                     </Link>
@@ -285,7 +299,7 @@ export default function Header() {
                   <button
                     type="button"
                     onClick={handleLogout}
-                    className="rounded-xl px-4 py-3 text-left text-sm font-semibold text-danger hover:bg-danger-light"
+                    className="rounded-2xl px-4 py-3 text-left text-sm font-semibold text-danger hover:bg-danger-light"
                   >
                     {so.nav.logout}
                   </button>

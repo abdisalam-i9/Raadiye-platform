@@ -9,7 +9,7 @@ export default function Pagination({ pagination, onPageChange }) {
         type="button"
         disabled={!hasPreviousPage}
         onClick={() => onPageChange(currentPage - 1)}
-        className="h-11 rounded-xl border border-line bg-paper px-4 text-sm font-semibold text-ink transition hover:border-forest disabled:cursor-not-allowed disabled:opacity-50"
+        className="h-11 rounded-full border border-line bg-paper/80 px-4 text-sm font-semibold text-ink transition hover:border-forest hover:text-forest disabled:cursor-not-allowed disabled:opacity-50"
       >
         Hore
       </button>
@@ -22,7 +22,7 @@ export default function Pagination({ pagination, onPageChange }) {
         type="button"
         disabled={!hasNextPage}
         onClick={() => onPageChange(currentPage + 1)}
-        className="h-11 rounded-xl border border-line bg-paper px-4 text-sm font-semibold text-ink transition hover:border-forest disabled:cursor-not-allowed disabled:opacity-50"
+        className="h-11 rounded-full border border-line bg-paper/80 px-4 text-sm font-semibold text-ink transition hover:border-forest hover:text-forest disabled:cursor-not-allowed disabled:opacity-50"
       >
         Xiga
       </button>

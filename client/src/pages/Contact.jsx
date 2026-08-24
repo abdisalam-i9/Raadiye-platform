@@ -52,7 +52,7 @@ export default function Contact() {
 
         <form
           onSubmit={handleSubmit}
-          className="space-y-5 rounded-[1.15rem] border border-line bg-paper p-6 shadow-card sm:p-8"
+          className="space-y-5 surface p-6 sm:p-8"
         >
           <Input
             id="name"

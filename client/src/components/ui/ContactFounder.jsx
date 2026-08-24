@@ -22,7 +22,7 @@ export default function ContactFounder({ phone, kind = 'found' }) {
 
   if (!revealed) {
     return (
-      <div className="rounded-[1.15rem] border border-forest/20 bg-forest-light p-5">
+      <div className="rounded-[1.35rem] border border-forest/15 bg-forest-light/80 p-5">
         <h2 className="text-lg font-semibold text-ink">
           {isLost ? so.actions.contactOwner : so.actions.contactFinder}
         </h2>
@@ -39,7 +39,7 @@ export default function ContactFounder({ phone, kind = 'found' }) {
   }
 
   return (
-    <div className="rounded-[1.15rem] border border-forest/20 bg-forest-light p-5">
+    <div className="rounded-[1.35rem] border border-forest/15 bg-forest-light/80 p-5">
       <p className="text-sm font-semibold text-forest">
         {isLost ? so.detail.ownerPhone : so.detail.finderPhone}
       </p>

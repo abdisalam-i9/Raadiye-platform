@@ -30,7 +30,7 @@ export default function Modal({
   return (
     <div className="fixed inset-0 z-[80] flex items-end justify-center sm:items-center">
       <div
-        className="absolute inset-0 bg-ink/40"
+        className="absolute inset-0 bg-ink/40 backdrop-blur-sm"
         onClick={onClose}
         aria-hidden="true"
       />
@@ -38,7 +38,7 @@ export default function Modal({
         role="dialog"
         aria-modal="true"
         aria-labelledby={title ? 'modal-title' : undefined}
-        className="relative z-10 w-full max-w-md rounded-t-3xl bg-paper p-6 shadow-lift sm:rounded-3xl"
+        className="relative z-10 w-full max-w-md rounded-t-3xl bg-paper/95 p-6 shadow-lift backdrop-blur-xl sm:rounded-3xl"
       >
         <div className="mb-4 flex items-start justify-between gap-4">
           {title && (

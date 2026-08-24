@@ -27,7 +27,7 @@ export function ToastProvider({ children }) {
             key={toast.id}
             role="status"
             className={cn(
-              'rounded-xl px-4 py-3 text-sm font-medium text-white shadow-lift',
+              'animate-toast rounded-2xl px-4 py-3 text-sm font-medium text-white shadow-lift backdrop-blur',
               toast.type === 'error' && 'bg-danger',
               toast.type === 'info' && 'bg-forest',
               toast.type === 'warning' && 'bg-warn',

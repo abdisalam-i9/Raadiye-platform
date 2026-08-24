@@ -57,7 +57,7 @@ export default function RecentItems({ kind = 'found' }) {
         </div>
 
         {error && (
-          <div className="mt-8 rounded-[1.15rem] border border-line bg-paper p-6 text-center">
+          <div className="mt-8 surface p-6 text-center">
             <p className="text-ink-soft">{so.errors.recent}</p>
             <Button type="button" className="mt-4" onClick={fetchRecent}>
               Mar kale isku day

@@ -42,7 +42,7 @@ export default function Home() {
         </Container>
       </section>
 
-      <section className="border-y border-line bg-paper section-y">
+      <section className="section-y">
         <Container>
           <h2 className="text-center text-ink">Sida Baafiye u shaqeeyo</h2>
           <div className="mt-10 grid gap-6 md:grid-cols-3">
@@ -82,8 +82,9 @@ export default function Home() {
         </Container>
       </section>
 
-      <section className="border-t border-line bg-forest text-paper section-y">
-        <Container className="text-center">
+      <section className="relative overflow-hidden bg-forest text-paper section-y">
+        <div className="pointer-events-none absolute -right-16 top-0 size-64 rounded-full bg-paper/10 blur-3xl" />
+        <Container className="relative text-center">
           <h2 className="text-paper">Ma heshay shay, ama ma kaa lumay?</h2>
           <p className="mx-auto mt-3 max-w-xl text-forest-light">
             Soo gudbi si qofkii kale uu kuu soo waco.
@@ -92,12 +93,7 @@ export default function Home() {
             <Button as={Link} to="/post-item" variant="secondary">
               {so.actions.postFound}
             </Button>
-            <Button
-              as={Link}
-              to="/post-lost"
-              className="border-paper/30 bg-transparent text-paper hover:bg-paper/10"
-              variant="outline"
-            >
+            <Button as={Link} to="/post-lost" variant="onDark">
               {so.actions.postLost}
             </Button>
           </div>
@@ -109,8 +105,8 @@ export default function Home() {
 
 function Step({ icon: Icon, number, title, text }) {
   return (
-    <div className="rounded-[1.15rem] border border-line bg-cream p-6">
-      <span className="grid size-11 place-items-center rounded-xl bg-forest text-paper">
+    <div className="surface card-hover p-6">
+      <span className="grid size-11 place-items-center rounded-2xl bg-forest text-paper">
         <Icon className="size-5" />
       </span>
       <p className="mt-4 text-xs font-semibold uppercase tracking-wider text-forest">{number}</p>

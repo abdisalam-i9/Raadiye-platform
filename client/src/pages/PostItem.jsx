@@ -15,7 +15,7 @@ import Select from '../components/ui/Select';
 import Container from '../components/ui/Container';
 import PageHeader from '../components/ui/PageHeader';
 import Alert from '../components/ui/Alert';
-import LoadingSpinner from '../components/ui/LoadingSpinner';
+import { FormSkeleton } from '../components/ui/Skeleton';
 
 export default function PostItem({ kind = 'found' }) {
   const listing = getListing(kind);
@@ -66,9 +66,11 @@ export default function PostItem({ kind = 'found' }) {
 
   if (categoriesLoading) {
     return (
-      <div className="flex min-h-[50vh] items-center justify-center">
-        <LoadingSpinner label="Qaybaha ayaa soo dhacaya..." />
-      </div>
+      <Container className="py-10 sm:py-14">
+        <div className="mx-auto max-w-2xl">
+          <FormSkeleton />
+        </div>
+      </Container>
     );
   }
 
@@ -84,7 +86,7 @@ export default function PostItem({ kind = 'found' }) {
 
         <form
           onSubmit={handleSubmit}
-          className="space-y-5 rounded-[1.15rem] border border-line bg-paper p-6 shadow-card sm:p-8"
+          className="surface space-y-5 p-6 sm:p-8"
         >
           <Input
             id="title"

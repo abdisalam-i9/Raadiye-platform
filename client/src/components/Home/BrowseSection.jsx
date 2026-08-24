@@ -133,7 +133,7 @@ export default function BrowseSection({ kind = 'found' }) {
           description={isLost ? so.browse.lostBody : so.browse.foundBody}
         />
 
-        <div className="relative">
+        <div className="glass relative rounded-2xl">
           <label htmlFor="browse-search" className="sr-only">
             Raadi shay
           </label>
@@ -144,7 +144,7 @@ export default function BrowseSection({ kind = 'found' }) {
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             placeholder="Raadi shay..."
-            className="h-12 w-full rounded-xl border border-line bg-paper pl-11 pr-4 text-sm outline-none transition focus:border-forest focus:ring-4 focus:ring-forest/10"
+            className="h-12 w-full rounded-2xl bg-transparent pl-11 pr-4 text-sm outline-none"
           />
         </div>
 
@@ -161,7 +161,7 @@ export default function BrowseSection({ kind = 'found' }) {
           </Button>
         </div>
 
-        <div className={`mt-4 grid gap-3 md:grid-cols-3 ${filtersOpen ? 'grid' : 'hidden md:grid'}`}>
+        <div className={`mt-4 grid gap-3 rounded-[1.35rem] border border-white/70 bg-paper/50 p-4 backdrop-blur md:grid-cols-3 ${filtersOpen ? 'grid' : 'hidden md:grid'}`}>
           <Select
             label="Qaybta"
             value={category}
@@ -213,7 +213,7 @@ export default function BrowseSection({ kind = 'found' }) {
         </div>
 
         {error && (
-          <div className="mt-8 rounded-[1.15rem] border border-line bg-paper p-8 text-center">
+          <div className="mt-8 surface p-8 text-center">
             <p className="text-ink-soft">{so.errors.browse}</p>
             <Button type="button" className="mt-4" onClick={fetchItems}>
               Mar kale isku day

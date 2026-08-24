@@ -10,7 +10,7 @@ import {
   getErrorMessage,
 } from '../utils/helpers';
 import { usePageTitle } from '../hooks/usePageTitle';
-import LoadingSpinner from '../components/ui/LoadingSpinner';
+import { ItemCardSkeleton } from '../components/ui/Skeleton';
 import EmptyState from '../components/ui/EmptyState';
 import Button from '../components/ui/Button';
 import Container from '../components/ui/Container';
@@ -106,9 +106,13 @@ export default function MyItems() {
 
   if (loading) {
     return (
-      <div className="flex min-h-[50vh] items-center justify-center">
-        <LoadingSpinner label="Alaabtaada ayaa soo dhacaysa..." />
-      </div>
+      <Container className="py-10 sm:py-14">
+        <div className="grid gap-6">
+          {Array.from({ length: 3 }).map((_, index) => (
+            <ItemCardSkeleton key={index} />
+          ))}
+        </div>
+      </Container>
     );
   }
 
@@ -164,7 +168,7 @@ export default function MyItems() {
           {items.map((item) => (
             <article
               key={item._id}
-              className="overflow-hidden rounded-[1.15rem] border border-line bg-paper shadow-card sm:flex"
+              className="surface overflow-hidden sm:flex"
             >
               <CategoryImage
                 item={item}

@@ -61,7 +61,7 @@ export default function Services() {
           {services.map(({ icon: Icon, title, description, link, linkLabel }) => (
             <article
               key={title}
-              className="rounded-[1.15rem] border border-line bg-paper p-6 shadow-card"
+              className="surface card-hover p-6"
             >
               <span className="grid size-10 place-items-center rounded-xl bg-forest-light text-forest">
                 <Icon className="size-5" />
@@ -76,7 +76,7 @@ export default function Services() {
         </div>
       </Container>
 
-      <section className="bg-forest text-paper section-y">
+      <section className="relative overflow-hidden bg-forest text-paper section-y">
         <Container className="max-w-3xl text-center">
           <HiOutlineUsers className="mx-auto size-8" />
           <h2 className="mt-4 text-paper">{so.services.ctaTitle}</h2>

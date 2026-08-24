@@ -13,7 +13,7 @@ export default function Alert({ type = 'info', children, className }) {
   return (
     <div
       role={type === 'error' ? 'alert' : 'status'}
-      className={cn('rounded-xl border px-4 py-3 text-sm leading-6', styles[type], className)}
+      className={cn('rounded-2xl border px-4 py-3 text-sm leading-6', styles[type], className)}
     >
       {children}
     </div>

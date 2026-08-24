@@ -164,7 +164,7 @@ export default function ItemDetail({ kind = 'found' }) {
         ← {isLost ? so.detail.backLost : so.detail.back}
       </Button>
 
-      <div className="overflow-hidden rounded-[1.15rem] border border-line bg-paper shadow-card lg:grid lg:grid-cols-[1fr_1.1fr]">
+      <div className="surface overflow-hidden lg:grid lg:grid-cols-[1fr_1.1fr]">
         <CategoryImage item={item} alt={item.title} className="h-72 w-full lg:h-full lg:min-h-[420px]" />
 
         <div className="p-6 sm:p-8">
@@ -205,7 +205,7 @@ export default function ItemDetail({ kind = 'found' }) {
               )}
 
               {isOwner && (
-                <div className="mt-8 rounded-[1.15rem] border border-line bg-cream p-4">
+                <div className="mt-8 rounded-[1.35rem] border border-line/70 bg-cream/80 p-4">
                   <p className="text-sm font-semibold text-ink">{so.detail.ownerNote}</p>
                   {isActive && (
                     <div className="mt-4 flex flex-wrap gap-3">
@@ -316,7 +316,7 @@ export default function ItemDetail({ kind = 'found' }) {
 
 function Info({ label, value }) {
   return (
-    <div className="rounded-xl bg-cream px-4 py-3">
+    <div className="rounded-2xl bg-cream/90 px-4 py-3">
       <dt className="text-xs font-semibold uppercase tracking-wide text-muted">{label}</dt>
       <dd className="mt-1 font-medium text-ink">{value}</dd>
     </div>

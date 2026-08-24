@@ -2,19 +2,21 @@ import { cn } from '../../utils/cn';
 
 const variants = {
   primary:
-    'bg-forest text-white shadow-sm hover:bg-forest-dark disabled:bg-forest/50',
+    'bg-forest text-white shadow-[0_8px_20px_rgb(15_122_98_/_0.28)] hover:bg-forest-dark hover:-translate-y-0.5 hover:shadow-[0_12px_24px_rgb(15_122_98_/_0.32)] disabled:translate-y-0 disabled:bg-forest/50 disabled:shadow-none',
   secondary:
-    'bg-clay text-white shadow-sm hover:bg-clay-dark disabled:bg-clay/50',
+    'bg-clay text-white shadow-[0_8px_20px_rgb(224_122_61_/_0.28)] hover:bg-clay-dark hover:-translate-y-0.5 disabled:translate-y-0 disabled:bg-clay/50 disabled:shadow-none',
   outline:
-    'border border-line bg-paper text-ink hover:border-forest hover:text-forest disabled:opacity-50',
+    'border border-line bg-paper/80 text-ink hover:border-forest hover:text-forest hover:bg-forest-light/60 disabled:opacity-50',
   danger:
     'bg-danger text-white shadow-sm hover:bg-red-800 disabled:bg-danger/50',
   ghost:
-    'bg-transparent text-ink-soft hover:bg-cream hover:text-ink disabled:opacity-50',
+    'bg-transparent text-ink-soft hover:bg-forest-light/70 hover:text-ink disabled:opacity-50',
+  onDark:
+    'border border-paper/30 bg-transparent text-paper hover:bg-paper/10 disabled:opacity-50',
 };
 
 const sizes = {
-  sm: 'h-9 px-3 text-sm',
+  sm: 'h-9 px-3.5 text-sm',
   md: 'h-11 px-4 text-sm',
   lg: 'h-12 px-5 text-base',
 };
@@ -38,7 +40,7 @@ export default function Button({
       disabled={isButton ? disabled || loading : undefined}
       aria-busy={loading || undefined}
       className={cn(
-        'inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition duration-150',
+        'inline-flex items-center justify-center gap-2 rounded-full font-semibold transition duration-200',
         variants[variant],
         sizes[size],
         className

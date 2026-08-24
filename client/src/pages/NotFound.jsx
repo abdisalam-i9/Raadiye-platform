@@ -9,7 +9,7 @@ export default function NotFound() {
 
   return (
     <Container className="flex min-h-[60vh] items-center justify-center py-16">
-      <div className="max-w-lg text-center">
+      <div className="surface max-w-lg px-8 py-12 text-center">
         <p className="text-xs font-semibold uppercase tracking-[0.18em] text-forest">404</p>
         <h1 className="mt-3 text-ink">{so.page404.title}</h1>
         <p className="mt-4 text-ink-soft">{so.page404.body}</p>

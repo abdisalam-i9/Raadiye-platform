@@ -8,7 +8,7 @@ export default function About() {
 
   return (
     <div>
-      <section className="border-b border-line bg-paper">
+      <section className="border-b border-white/60">
         <Container className="py-14 sm:py-16">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-forest">
             {so.about.eyebrow}
@@ -54,7 +54,7 @@ export default function About() {
         </Container>
       </section>
 
-      <section className="bg-forest text-paper section-y">
+      <section className="relative overflow-hidden bg-forest text-paper section-y">
         <Container className="max-w-3xl text-center">
           <h2 className="text-paper">{so.about.mission}</h2>
           <p className="mt-4 text-lg leading-8 text-forest-light">{so.about.missionBody}</p>
@@ -63,7 +63,7 @@ export default function About() {
 
       <section className="section-y">
         <Container>
-          <div className="rounded-[1.15rem] border border-line bg-paper p-6">
+          <div className="surface p-6">
             <h3 className="text-ink">{so.about.closeTitle}</h3>
             <p className="mt-2 text-ink-soft">{so.about.closeBody}</p>
           </div>
@@ -75,7 +75,7 @@ export default function About() {
 
 function Fact({ icon: Icon, title, text }) {
   return (
-    <div className="rounded-[1.15rem] border border-line bg-paper p-5">
+    <div className="surface p-5">
       <span className="grid size-10 place-items-center rounded-xl bg-forest-light text-forest">
         <Icon className="size-5" />
       </span>
@@ -87,7 +87,7 @@ function Fact({ icon: Icon, title, text }) {
 
 function Step({ number, title, text }) {
   return (
-    <div className="rounded-[1.15rem] border border-line bg-paper p-6">
+    <div className="surface p-6">
       <p className="text-xs font-semibold uppercase tracking-wider text-forest">{number}</p>
       <h3 className="mt-2 text-ink">{title}</h3>
       <p className="mt-2 text-sm leading-6 text-ink-soft">{text}</p>

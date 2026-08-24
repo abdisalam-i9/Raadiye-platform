@@ -5,7 +5,7 @@ import { useCategories } from '../context/CategoriesContext';
 import { useToast } from '../context/ToastContext';
 import { getErrorMessage } from '../utils/helpers';
 import { usePageTitle } from '../hooks/usePageTitle';
-import LoadingSpinner from '../components/ui/LoadingSpinner';
+import { FormSkeleton } from '../components/ui/Skeleton';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
 import Alert from '../components/ui/Alert';
@@ -77,9 +77,9 @@ export default function AdminCategories() {
 
   if (loading) {
     return (
-      <div className="flex min-h-[50vh] items-center justify-center">
-        <LoadingSpinner label="Qaybaha ayaa soo dhacaya..." />
-      </div>
+      <Container className="py-10 sm:py-14">
+        <FormSkeleton />
+      </Container>
     );
   }
 
@@ -90,7 +90,7 @@ export default function AdminCategories() {
       <div className="grid gap-8 lg:grid-cols-[1fr_1.2fr]">
         <form
           onSubmit={handleSubmit}
-          className="space-y-4 rounded-[1.15rem] border border-line bg-paper p-6 shadow-card"
+          className="surface space-y-4 p-6"
         >
           <h2 className="text-lg font-semibold text-ink">
             {editingId ? so.admin.edit : so.admin.create}
@@ -128,7 +128,7 @@ export default function AdminCategories() {
           </div>
         </form>
 
-        <div className="rounded-[1.15rem] border border-line bg-paper p-6 shadow-card">
+        <div className="surface p-6">
           <h2 className="text-lg font-semibold text-ink">{so.admin.existing}</h2>
           <ul className="mt-5 divide-y divide-line">
             {categories.map((category) => (
