@@ -1,15 +1,14 @@
-import Hero from "../components/Home/Hero";
 import BrowseSection from "../components/Home/BrowseSection";
 
-const Home = () => {
+const Items = () => {
   return (
     <>
-      <main>
-        <Hero />
+
+      <main className="py-10">
         <BrowseSection />
       </main>
     </>
   );
 };
 
-export default Home;
+export default Items;
