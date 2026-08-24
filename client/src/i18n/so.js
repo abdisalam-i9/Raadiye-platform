@@ -132,6 +132,9 @@ export const so = {
     closeMenu: 'Xir menu',
     openAccount: 'Fur menu-ga akoonka',
     search: 'Raadi shay',
+    toggleTheme: 'Beddel moodka iftiin/madow',
+    lightMode: 'Isticmaal moodka iftiinka',
+    darkMode: 'Isticmaal moodka madowga',
   },
   auth: {
     loginTitle: 'Gal akoonkaaga',

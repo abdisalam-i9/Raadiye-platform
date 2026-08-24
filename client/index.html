@@ -14,6 +14,19 @@
     />
     <meta property="og:type" content="website" />
     <title>Baafiye — Raadi Alaabta Kaa Lumay</title>
+    <script>
+      (function () {
+        try {
+          var theme = localStorage.getItem('baafiye-theme');
+          if (theme !== 'light' && theme !== 'dark') {
+            theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          }
+          if (theme === 'dark') document.documentElement.classList.add('dark');
+          var meta = document.querySelector('meta[name="theme-color"]');
+          if (meta) meta.content = theme === 'dark' ? '#0c1612' : '#0f7a62';
+        } catch (e) {}
+      })();
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link

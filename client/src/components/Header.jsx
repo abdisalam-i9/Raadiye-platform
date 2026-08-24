@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import { so } from '../i18n/so';
 import Brand from './Brand';
 import Button from './ui/Button';
+import ThemeToggle from './ui/ThemeToggle';
 import Container from './ui/Container';
 import { cn } from '../utils/cn';
 
@@ -96,7 +97,7 @@ export default function Header() {
   }, [userOpen]);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-white/50 bg-paper/70 shadow-[0_8px_30px_rgb(16_35_27_/_0.04)] backdrop-blur-xl">
+    <header className="sticky top-0 z-50 border-b border-white/50 bg-paper/70 shadow-[0_8px_30px_rgb(16_35_27_/_0.04)] backdrop-blur-xl dark:border-white/10 dark:bg-paper/80 dark:shadow-[0_8px_30px_rgb(0_0_0_/_0.28)]">
       <Container>
         <div className="flex h-[4.35rem] items-center justify-between gap-3">
           <Brand onClick={closeMenu} />
@@ -110,6 +111,7 @@ export default function Header() {
           </nav>
 
           <div className="hidden items-center gap-2 lg:flex">
+            <ThemeToggle />
             <Button as={Link} to="/items" variant="ghost" size="sm">
               {so.actions.search}
             </Button>
@@ -122,13 +124,13 @@ export default function Header() {
               <div className="relative" ref={userMenuRef}>
                 <button
                   type="button"
-                  className="inline-flex max-w-[200px] items-center gap-2 rounded-full py-1 pl-1 pr-3 text-sm font-semibold text-ink transition hover:bg-forest-light/70"
+                  className="inline-flex max-w-[200px] items-center gap-2 rounded-full py-1 pl-1 pr-3 text-sm font-semibold text-ink transition hover:bg-forest-light/70 dark:hover:bg-forest-light"
                   aria-expanded={userOpen}
                   aria-haspopup="menu"
                   aria-label={so.a11y.openAccount}
                   onClick={() => setUserOpen((open) => !open)}
                 >
-                  <span className="grid size-8 place-items-center rounded-full bg-forest text-[11px] font-bold text-paper">
+                  <span className="grid size-8 place-items-center rounded-full bg-forest text-[11px] font-bold text-white">
                     {getInitials(user?.name || user?.email)}
                   </span>
                   <span className="truncate">{user?.name || user?.email}</span>
@@ -143,7 +145,7 @@ export default function Header() {
                     <Link
                       to="/my-items"
                       role="menuitem"
-                      className="block rounded-xl px-3 py-2.5 text-sm font-medium text-ink transition hover:bg-forest-light/70"
+                      className="block rounded-xl px-3 py-2.5 text-sm font-medium text-ink transition hover:bg-forest-light/70 dark:hover:bg-forest-light"
                       onClick={() => setUserOpen(false)}
                     >
                       {so.nav.myItems}
@@ -151,7 +153,7 @@ export default function Header() {
                     <Link
                       to="/post-item"
                       role="menuitem"
-                      className="block rounded-xl px-3 py-2.5 text-sm font-medium text-ink transition hover:bg-forest-light/70"
+                      className="block rounded-xl px-3 py-2.5 text-sm font-medium text-ink transition hover:bg-forest-light/70 dark:hover:bg-forest-light"
                       onClick={() => setUserOpen(false)}
                     >
                       {so.nav.postFound}
@@ -159,7 +161,7 @@ export default function Header() {
                     <Link
                       to="/post-lost"
                       role="menuitem"
-                      className="block rounded-xl px-3 py-2.5 text-sm font-medium text-ink transition hover:bg-forest-light/70"
+                      className="block rounded-xl px-3 py-2.5 text-sm font-medium text-ink transition hover:bg-forest-light/70 dark:hover:bg-forest-light"
                       onClick={() => setUserOpen(false)}
                     >
                       {so.nav.postLost}
@@ -168,7 +170,7 @@ export default function Header() {
                       <Link
                         to="/admin/categories"
                         role="menuitem"
-                        className="block rounded-xl px-3 py-2.5 text-sm font-medium text-ink transition hover:bg-forest-light/70"
+                        className="block rounded-xl px-3 py-2.5 text-sm font-medium text-ink transition hover:bg-forest-light/70 dark:hover:bg-forest-light"
                         onClick={() => setUserOpen(false)}
                       >
                         {so.nav.admin}
@@ -199,9 +201,10 @@ export default function Header() {
           </div>
 
           <div className="flex items-center gap-1 lg:hidden">
+            <ThemeToggle />
             <Link
               to="/items"
-              className="rounded-full p-2 text-ink transition hover:bg-forest-light/70"
+              className="rounded-full p-2 text-ink transition hover:bg-forest-light/70 dark:hover:bg-forest-light"
               aria-label={so.a11y.search}
             >
               <HiSearch className="size-5" />
@@ -209,7 +212,7 @@ export default function Header() {
             <button
               ref={menuButtonRef}
               type="button"
-              className="rounded-full p-2 text-ink transition hover:bg-forest-light/70"
+              className="rounded-full p-2 text-ink transition hover:bg-forest-light/70 dark:hover:bg-forest-light"
               aria-label={so.a11y.openMenu}
               aria-expanded={menuOpen}
               aria-controls="mobile-menu"
@@ -224,7 +227,7 @@ export default function Header() {
       {menuOpen && (
         <div className="lg:hidden">
           <div
-            className="fixed inset-0 z-40 bg-ink/40 backdrop-blur-sm"
+            className="fixed inset-0 z-40 bg-black/45 backdrop-blur-sm"
             onClick={closeMenu}
             aria-hidden="true"
           />
@@ -258,7 +261,7 @@ export default function Header() {
                   className={({ isActive }) =>
                     cn(
                       'rounded-2xl px-4 py-3 text-sm font-semibold transition',
-                      isActive ? 'bg-forest-light text-forest' : 'text-ink hover:bg-cream'
+                      isActive ? 'bg-forest-light text-forest' : 'text-ink hover:bg-cream dark:hover:bg-forest-light/60'
                     )
                   }
                 >
@@ -283,7 +286,7 @@ export default function Header() {
                   <Link
                     to="/my-items"
                     onClick={closeMenu}
-                    className="rounded-2xl px-4 py-3 text-sm font-semibold text-ink hover:bg-cream"
+                    className="rounded-2xl px-4 py-3 text-sm font-semibold text-ink hover:bg-cream dark:hover:bg-forest-light/60"
                   >
                     {so.nav.myItems}
                   </Link>
@@ -291,7 +294,7 @@ export default function Header() {
                     <Link
                       to="/admin/categories"
                       onClick={closeMenu}
-                      className="rounded-2xl px-4 py-3 text-sm font-semibold text-ink hover:bg-cream"
+                      className="rounded-2xl px-4 py-3 text-sm font-semibold text-ink hover:bg-cream dark:hover:bg-forest-light/60"
                     >
                       {so.nav.admin}
                     </Link>

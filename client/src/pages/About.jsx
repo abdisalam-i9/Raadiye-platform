@@ -8,7 +8,7 @@ export default function About() {
 
   return (
     <div>
-      <section className="border-b border-white/60">
+      <section className="border-b border-white/60 dark:border-white/10">
         <Container className="py-14 sm:py-16">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-forest">
             {so.about.eyebrow}
@@ -40,7 +40,7 @@ export default function About() {
         </Container>
       </section>
 
-      <section className="border-y border-line bg-cream section-y">
+      <section className="border-y border-line bg-paper/40 section-y">
         <Container>
           <p className="text-center text-xs font-semibold uppercase tracking-[0.18em] text-forest">
             {so.about.how}
@@ -54,10 +54,10 @@ export default function About() {
         </Container>
       </section>
 
-      <section className="relative overflow-hidden bg-forest text-paper section-y">
+      <section className="relative overflow-hidden bg-forest text-white section-y">
         <Container className="max-w-3xl text-center">
-          <h2 className="text-paper">{so.about.mission}</h2>
-          <p className="mt-4 text-lg leading-8 text-forest-light">{so.about.missionBody}</p>
+          <h2 className="text-white">{so.about.mission}</h2>
+          <p className="mt-4 text-lg leading-8 text-white/80">{so.about.missionBody}</p>
         </Container>
       </section>
 

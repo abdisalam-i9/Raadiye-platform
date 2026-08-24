@@ -82,11 +82,11 @@ export default function Home() {
         </Container>
       </section>
 
-      <section className="relative overflow-hidden bg-forest text-paper section-y">
-        <div className="pointer-events-none absolute -right-16 top-0 size-64 rounded-full bg-paper/10 blur-3xl" />
+      <section className="relative overflow-hidden bg-forest text-white section-y">
+        <div className="pointer-events-none absolute -right-16 top-0 size-64 rounded-full bg-white/10 blur-3xl" />
         <Container className="relative text-center">
-          <h2 className="text-paper">Ma heshay shay, ama ma kaa lumay?</h2>
-          <p className="mx-auto mt-3 max-w-xl text-forest-light">
+          <h2 className="text-white">Ma heshay shay, ama ma kaa lumay?</h2>
+          <p className="mx-auto mt-3 max-w-xl text-white/80">
             Soo gudbi si qofkii kale uu kuu soo waco.
           </p>
           <div className="mt-6 flex flex-wrap justify-center gap-3">
@@ -106,7 +106,7 @@ export default function Home() {
 function Step({ icon: Icon, number, title, text }) {
   return (
     <div className="surface card-hover p-6">
-      <span className="grid size-11 place-items-center rounded-2xl bg-forest text-paper">
+      <span className="grid size-11 place-items-center rounded-2xl bg-forest text-white">
         <Icon className="size-5" />
       </span>
       <p className="mt-4 text-xs font-semibold uppercase tracking-wider text-forest">{number}</p>

@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
   --font-serif: "Source Serif 4", ui-serif, Georgia, serif;
@@ -24,6 +26,8 @@
   --color-danger-light: #fee2e2;
   --color-info: #1e40af;
   --color-info-light: #dbeafe;
+  --color-info: #1e40af;
+  --color-info-light: #dbeafe;
 
   --shadow-card: 0 1px 2px rgb(16 35 27 / 0.04), 0 10px 28px rgb(16 35 27 / 0.06);
   --shadow-lift: 0 18px 40px rgb(16 35 27 / 0.12);
@@ -32,6 +36,35 @@
 
 html {
   scroll-behavior: smooth;
+  color-scheme: light;
+}
+
+html.dark {
+  color-scheme: dark;
+  --color-ink: #e8f3ee;
+  --color-ink-soft: #b4c9bf;
+  --color-muted: #86a196;
+  --color-line: #2a4037;
+  --color-cream: #0c1612;
+  --color-paper: #14211c;
+  --color-forest: #3dd6a5;
+  --color-forest-dark: #6ee7b7;
+  --color-forest-light: #16382e;
+  --color-clay: #f0a06a;
+  --color-clay-dark: #ffc49a;
+  --color-clay-light: #3a2618;
+  --color-ok: #4ade80;
+  --color-ok-light: #12301f;
+  --color-warn: #fbbf24;
+  --color-warn-light: #32240f;
+  --color-danger: #f87171;
+  --color-danger-light: #3a1515;
+  --color-info: #93c5fd;
+  --color-info-light: #152038;
+  --color-info: #93c5fd;
+  --color-info-light: #152038;
+  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.28), 0 14px 36px rgb(0 0 0 / 0.32);
+  --shadow-lift: 0 20px 44px rgb(0 0 0 / 0.45);
 }
 
 body {
@@ -43,6 +76,13 @@ body {
   color: var(--color-ink);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+}
+
+html.dark body {
+  background:
+    radial-gradient(1100px 520px at 0% -10%, rgb(61 214 165 / 0.12), transparent 55%),
+    radial-gradient(900px 420px at 100% 0%, rgb(240 160 106 / 0.08), transparent 52%),
+    var(--color-cream);
 }
 
 body.menu-open {
@@ -107,6 +147,7 @@ h3 {
   }
 }
 
+.skip-link,
 .skip-link {
   position: absolute;
   left: 1rem;
@@ -120,6 +161,7 @@ h3 {
   font-weight: 600;
 }
 
+.skip-link:focus,
 .skip-link:focus {
   top: 1rem;
 }
@@ -131,6 +173,11 @@ h3 {
   border: 1px solid rgb(255 255 255 / 0.7);
 }
 
+html.dark .glass {
+  background: rgb(20 33 28 / 0.78);
+  border-color: rgb(255 255 255 / 0.08);
+}
+
 .surface {
   background: rgb(255 255 255 / 0.78);
   backdrop-filter: blur(16px);
@@ -138,6 +185,11 @@ h3 {
   border: 1px solid rgb(255 255 255 / 0.8);
   box-shadow: var(--shadow-card);
   border-radius: var(--radius-card);
+}
+
+html.dark .surface {
+  background: rgb(20 33 28 / 0.86);
+  border-color: rgb(255 255 255 / 0.08);
 }
 
 .card-hover {
@@ -172,10 +224,34 @@ h3 {
   box-shadow: inset 0 0 0 1px rgb(15 122 98 / 0.12);
 }
 
+html.dark .nav-link-active {
+  color: var(--color-forest);
+  box-shadow: inset 0 0 0 1px rgb(61 214 165 / 0.18);
+}
+
 .skeleton-shimmer {
   background: linear-gradient(90deg, #e4eee8 25%, #f4faf6 50%, #e4eee8 75%);
   background-size: 200% 100%;
   animation: shimmer 1.4s ease-in-out infinite;
+}
+
+html.dark .skeleton-shimmer {
+  background: linear-gradient(90deg, #1a2c26 25%, #243830 50%, #1a2c26 75%);
+  background-size: 200% 100%;
+}
+
+html.theme-animate,
+html.theme-animate body,
+html.theme-animate header,
+html.theme-animate footer,
+html.theme-animate .glass,
+html.theme-animate .surface,
+html.theme-animate .nav-link {
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 @keyframes shimmer {

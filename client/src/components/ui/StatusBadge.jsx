@@ -4,7 +4,7 @@ import { ITEM_STATUS_LABELS } from '../../constants/locations';
 const styles = {
   active: 'bg-forest-light text-forest',
   returned: 'bg-info-light text-info',
-  expired: 'bg-cream text-muted',
+  expired: 'bg-line/80 text-muted',
   cancelled: 'bg-danger-light text-danger',
 };
 

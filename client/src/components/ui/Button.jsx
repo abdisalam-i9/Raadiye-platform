@@ -12,7 +12,7 @@ const variants = {
   ghost:
     'bg-transparent text-ink-soft hover:bg-forest-light/70 hover:text-ink disabled:opacity-50',
   onDark:
-    'border border-paper/30 bg-transparent text-paper hover:bg-paper/10 disabled:opacity-50',
+    'border border-white/30 bg-transparent text-white hover:bg-white/10 disabled:opacity-50',
 };
 
 const sizes = {

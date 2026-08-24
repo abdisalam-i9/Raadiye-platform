@@ -10,13 +10,13 @@ export default function Brand({ onClick, compact = false, light = false }) {
       onClick={onClick}
       className={cn(
         'flex items-center gap-2.5 no-underline transition hover:opacity-90',
-        light ? 'text-paper' : 'text-ink'
+        light ? 'text-white' : 'text-ink'
       )}
     >
       <span
         className={cn(
           'grid size-9 place-items-center rounded-2xl shadow-sm',
-          light ? 'bg-paper text-forest' : 'bg-forest text-paper'
+          light ? 'bg-white text-forest' : 'bg-forest text-white'
         )}
         aria-hidden="true"
       >

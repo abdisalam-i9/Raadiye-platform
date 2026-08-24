@@ -161,7 +161,7 @@ export default function BrowseSection({ kind = 'found' }) {
           </Button>
         </div>
 
-        <div className={`mt-4 grid gap-3 rounded-[1.35rem] border border-white/70 bg-paper/50 p-4 backdrop-blur md:grid-cols-3 ${filtersOpen ? 'grid' : 'hidden md:grid'}`}>
+        <div className={`mt-4 grid gap-3 rounded-[1.35rem] border border-white/70 bg-paper/50 p-4 backdrop-blur md:grid-cols-3 dark:border-white/10 dark:bg-paper/60 ${filtersOpen ? 'grid' : 'hidden md:grid'}`}>
           <Select
             label="Qaybta"
             value={category}

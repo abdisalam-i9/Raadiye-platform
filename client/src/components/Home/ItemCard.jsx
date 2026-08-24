@@ -20,7 +20,7 @@ export default function ItemCard({ item, kind = 'found' }) {
           alt={item.title}
           className="h-48 w-full transition duration-500 group-hover:scale-105"
         />
-        <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-ink/35 to-transparent" />
+        <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/40 to-transparent" />
         <div className="absolute left-3 top-3 flex items-center gap-2">
           <span className="rounded-full bg-paper/90 px-2.5 py-1 text-[11px] font-semibold text-forest shadow-sm backdrop-blur">
             {getCategoryName(item.category)}
@@ -45,7 +45,7 @@ export default function ItemCard({ item, kind = 'found' }) {
           </span>
         </div>
 
-        <span className="mt-4 inline-flex w-fit items-center rounded-full bg-forest-light px-3 py-1.5 text-sm font-semibold text-forest transition group-hover:bg-forest group-hover:text-paper">
+        <span className="mt-4 inline-flex w-fit items-center rounded-full bg-forest-light px-3 py-1.5 text-sm font-semibold text-forest transition group-hover:bg-forest group-hover:text-white">
           Faahfaahin
         </span>
       </div>

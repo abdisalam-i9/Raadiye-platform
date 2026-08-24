@@ -76,7 +76,7 @@ export default function Hero() {
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
           <div className="surface p-6 sm:col-span-2 xl:col-span-2">
-            <span className="grid size-14 place-items-center rounded-2xl bg-forest text-paper shadow-[0_10px_24px_rgb(15_122_98_/_0.28)]">
+            <span className="grid size-14 place-items-center rounded-2xl bg-forest text-white shadow-[0_10px_24px_rgb(15_122_98_/_0.28)]">
               <HiOutlineHeart className="size-7" />
             </span>
             <p className="mt-5 font-display text-2xl text-ink">Shay kasta qof baa leh.</p>

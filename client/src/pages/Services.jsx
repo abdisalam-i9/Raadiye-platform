@@ -76,11 +76,11 @@ export default function Services() {
         </div>
       </Container>
 
-      <section className="relative overflow-hidden bg-forest text-paper section-y">
+      <section className="relative overflow-hidden bg-forest text-white section-y">
         <Container className="max-w-3xl text-center">
           <HiOutlineUsers className="mx-auto size-8" />
-          <h2 className="mt-4 text-paper">{so.services.ctaTitle}</h2>
-          <p className="mt-3 text-forest-light">{so.services.ctaBody}</p>
+          <h2 className="mt-4 text-white">{so.services.ctaTitle}</h2>
+          <p className="mt-3 text-white/80">{so.services.ctaBody}</p>
           <Button as={Link} to="/register" variant="secondary" className="mt-6">
             {so.services.cta}
           </Button>
