@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
   "name": "mern-stack-app",
   "version": "1.0.0",
   "description": "Basic MERN stack with header, footer, and empty pages",
@@ -11,6 +12,8 @@
   "devDependencies": {
     "concurrently": "^8.2.2"
   },
+=======
+>>>>>>> a4c83dc5cfa80e77266996b598ac3e6f75edc1ff
   "dependencies": {
     "react-icons": "^5.7.0"
   }
