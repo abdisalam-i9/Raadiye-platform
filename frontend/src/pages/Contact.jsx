@@ -1,8 +1,8 @@
 const fields = [
   ["Name", "text", "Your name"],
   ["Email", "email", "you@example.com"],
-  ["Subject", "text", "How can we help?"],
 ];
+
 export default function Contact() {
   return (
     <section className="page-shell py-14 sm:py-20">
@@ -27,7 +27,7 @@ export default function Contact() {
           className="mt-9 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-8"
         >
           <div className="grid gap-5">
-            {fields.slice(0, 2).map(([label, type, placeholder]) => (
+            {fields.map(([label, type, placeholder]) => (
               <Field
                 key={label}
                 label={label}
@@ -74,6 +74,7 @@ function Field({ label, type, placeholder }) {
   return (
     <label className="grid gap-2 text-sm font-semibold text-slate-800">
       {label}
+
       <input
         required
         type={type}
