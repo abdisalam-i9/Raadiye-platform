@@ -38,7 +38,7 @@ export default function Header() {
             </span>
 
             <span className="text-xl font-bold tracking-tight text-gray-900">
-              Baafiye
+              LostAndFound
             </span>
           </Link>
 
