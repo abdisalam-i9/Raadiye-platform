@@ -20,11 +20,11 @@ const About = () => {
           </span>
 
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 leading-tight">
-            About Baafiye
+            About LostAndFound
           </h1>
 
           <p className="mt-5 text-base sm:text-lg text-gray-600 leading-relaxed">
-            Baafiye is a community-focused lost and found service designed
+            LostAndFound is a community-focused lost and found service designed
             to help people reconnect with belongings they have lost and
             return items they have found.
           </p>
@@ -55,7 +55,7 @@ const About = () => {
               </p>
 
               <p className="mt-4 text-gray-600 leading-relaxed">
-                Baafiye provides one place where people can share found
+                LostAndFound provides one place where people can share found
                 items, search for belongings they have lost, and contact
                 the person who found them.
               </p>
