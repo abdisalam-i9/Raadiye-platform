@@ -10,7 +10,7 @@ function Header() {
     <header className="bg-blue-600 text-white shadow-md">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
         <Link to="/" className="text-2xl font-bold text-white">
-          MERN App
+          LostAndFound
         </Link>
         <nav className="flex gap-6">
           <NavLink to="/" end className={navLinkClass}>
