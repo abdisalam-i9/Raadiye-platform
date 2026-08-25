@@ -1,50 +1,56 @@
-import jwt from "jsonwebtoken";
-import env from "../config/env.js";
+import jwt from 'jsonwebtoken';
+import env from '../config/env.js';
 
-const authMiddleware = (req, res, next) => {
+export default function authMiddleware(req, res, next) {
   try {
-    // Get Authorization header
     const authHeader = req.headers.authorization;
 
-    // Check if token exists
     if (!authHeader) {
       return res.status(401).json({
         status: false,
-        message: "Authentication required",
+        message: 'Authentication required',
       });
     }
 
-    // Check Bearer format
-    if (!authHeader.startsWith("Bearer ")) {
+    if (!authHeader.startsWith('Bearer ')) {
       return res.status(401).json({
         status: false,
-        message: "Invalid authorization format",
+        message: 'Invalid authorization format',
       });
     }
 
-    // Get token
-    const token = authHeader.split(" ")[1];
-
-    // Verify token
-    const decoded = jwt.verify(
-      token,
-      env.JWT.SECRET
-    );
-
-    // Store authenticated user information
+    const token = authHeader.split(' ')[1];
+    const decoded = jwt.verify(token, env.JWT.SECRET);
     req.user = decoded;
-
-    // Continue to route
     next();
-
   } catch (error) {
-    console.log("Authentication error:", error);
+    console.log('Authentication error:', error);
 
     return res.status(401).json({
       status: false,
-      message: "Invalid or expired token",
+      message: 'Invalid or expired token',
     });
   }
-};
+}
 
-export default authMiddleware;
+export function optionalAuth(req, _res, next) {
+  const authHeader = req.headers.authorization;
+  if (!authHeader?.startsWith('Bearer ')) return next();
+
+  try {
+    req.user = jwt.verify(authHeader.split(' ')[1], env.JWT.SECRET);
+  } catch {
+    req.user = undefined;
+  }
+  next();
+}
+
+export function adminMiddleware(req, res, next) {
+  if (req.user?.role !== 'admin') {
+    return res.status(403).json({
+      status: false,
+      message: 'Admin access required',
+    });
+  }
+  next();
+}

@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { HiOutlineSearch, HiOutlineUpload, HiOutlinePhone } from 'react-icons/hi';
+import { HiOutlineSearch, HiOutlineUpload, HiOutlineShieldCheck, HiOutlineChat } from 'react-icons/hi';
 import Hero from '../components/Home/Hero';
 import RecentItems from '../components/Home/RecentItems';
 import CategoryCard from '../components/ui/CategoryCard';
@@ -46,7 +46,7 @@ export default function Home() {
       <section className="section-y">
         <Container>
           <h2 className="text-center text-ink">{t.home.howTitle}</h2>
-          <div className="mt-10 grid gap-6 md:grid-cols-3">
+          <div className="mt-10 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
             <Step
               icon={HiOutlineSearch}
               number="1"
@@ -60,10 +60,16 @@ export default function Home() {
               text={t.home.step2Body}
             />
             <Step
-              icon={HiOutlinePhone}
+              icon={HiOutlineShieldCheck}
               number="3"
               title={t.home.step3Title}
               text={t.home.step3Body}
+            />
+            <Step
+              icon={HiOutlineChat}
+              number="4"
+              title={t.home.step4Title}
+              text={t.home.step4Body}
             />
           </div>
         </Container>
@@ -85,11 +91,11 @@ export default function Home() {
           <h2 className="text-white">{t.home.ctaFoundTitle}</h2>
           <p className="mx-auto mt-3 max-w-xl text-white/80">{t.home.ctaFoundBody}</p>
           <div className="mt-6 flex flex-wrap justify-center gap-3">
-            <Button as={Link} to="/post-item" variant="secondary">
-              {t.actions.postFound}
+            <Button as={Link} to="/items" variant="secondary">
+              {t.actions.browseItems}
             </Button>
-            <Button as={Link} to="/post-lost" variant="onDark">
-              {t.actions.postLost}
+            <Button as={Link} to="/items?add=1" variant="onDark">
+              {t.browse.add}
             </Button>
           </div>
         </Container>

@@ -6,6 +6,7 @@ import { useCategories } from '../context/CategoriesContext';
 import { useToast } from '../context/ToastContext';
 import { api, listingApi } from '../services/api';
 import { DISTRICTS } from '../constants/locations';
+import { coordsForDistrict, isOpenStatus, itemCoords } from '../constants/geo';
 import { getItemDate, getListing } from '../constants/listings';
 import { useI18n } from '../context/LanguageContext';
 import { formatDate, getCategoryName, getErrorMessage } from '../utils/helpers';
@@ -15,9 +16,13 @@ import ImageUpload from '../components/ui/ImageUpload';
 import StatusBadge from '../components/ui/StatusBadge';
 import ContactFounder from '../components/ui/ContactFounder';
 import PossibleMatches from '../components/PossibleMatches';
+import StatusTracker from '../components/StatusTracker';
+import LocationMap from '../components/LocationMap';
+import ClaimPanel from '../components/ClaimPanel';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
 import Select from '../components/ui/Select';
+import Textarea from '../components/ui/Textarea';
 import { ConfirmModal } from '../components/ui/Modal';
 import { DetailSkeleton } from '../components/ui/Skeleton';
 import Container from '../components/ui/Container';
@@ -40,34 +45,55 @@ export default function ItemDetail({ kind = 'found' }) {
   const [actionLoading, setActionLoading] = useState(false);
   const [confirmCancel, setConfirmCancel] = useState(false);
   const [confirmReturned, setConfirmReturned] = useState(false);
+  const [confirmMatched, setConfirmMatched] = useState(false);
   const [form, setForm] = useState({});
+  const [pin, setPin] = useState(null);
   const [imageFile, setImageFile] = useState(null);
   const [chatStarting, setChatStarting] = useState(false);
+  const [myClaim, setMyClaim] = useState(null);
+  const [claims, setClaims] = useState([]);
 
   usePageTitle(item ? `${item.title} ${t.meta.itemSuffix}` : t.meta.itemFallback);
 
-  const fetchItem = useCallback(async () => {
-    setLoading(true);
-    setError(false);
+  const fetchItem = useCallback(async ({ silent = false } = {}) => {
+    if (!silent) {
+      setLoading(true);
+      setError(false);
+    }
 
     try {
       const data = await listingApi(kind).getById(id);
       setItem(data.item);
+      setMyClaim(data.myClaim || null);
       setForm({
         title: data.item.title,
         category: data.item.category?._id || data.item.category,
         district: data.item.district,
         village: data.item.village,
         [dateField]: data.item[dateField]?.slice(0, 10),
-        contactPhone: data.item.contactPhone,
+        contactPhone: data.item.contactPhone || '',
+        identifyingMarks: data.item.identifyingMarks || '',
       });
+      setPin(itemCoords(data.item));
+
+      const ownerId = String(data.item.postedBy?._id || data.item.postedBy || '');
+      if (user?.id && ownerId === String(user.id)) {
+        try {
+          const claimsData = await listingApi(kind).listClaims(id);
+          setClaims(claimsData.claims || []);
+        } catch {
+          setClaims([]);
+        }
+      } else {
+        setClaims([]);
+      }
     } catch {
       setError(true);
-      setItem(null);
+      if (!silent) setItem(null);
     } finally {
-      setLoading(false);
+      if (!silent) setLoading(false);
     }
-  }, [id, kind, dateField]);
+  }, [id, kind, dateField, user?.id]);
 
   useEffect(() => {
     fetchItem();
@@ -83,17 +109,21 @@ export default function ItemDetail({ kind = 'found' }) {
     setActionLoading(true);
 
     try {
-      let payload = form;
+      const coords = pin || itemCoords({ ...item, district: form.district });
+      let payload = { ...form, lat: coords.lat, lng: coords.lng };
       if (imageFile) {
         payload = new FormData();
         Object.entries(form).forEach(([key, value]) => {
           payload.append(key, value ?? '');
         });
+        payload.append('lat', String(coords.lat));
+        payload.append('lng', String(coords.lng));
         payload.append('image', imageFile);
       }
 
       const data = await listingApi(kind).update(id, payload);
       setItem(data.item);
+      setPin(itemCoords(data.item));
       setEditing(false);
       setImageFile(null);
       showToast(t.item.updated);
@@ -149,6 +179,20 @@ export default function ItemDetail({ kind = 'found' }) {
     }
   };
 
+  const handleMarkMatched = async () => {
+    setActionLoading(true);
+    try {
+      const data = await listingApi(kind).markMatched(id);
+      setItem(data.item);
+      showToast(t.item.markedMatched);
+    } catch (err) {
+      showToast(getErrorMessage(err, t.errors.generic), 'error');
+    } finally {
+      setActionLoading(false);
+      setConfirmMatched(false);
+    }
+  };
+
   if (loading) {
     return (
       <Container className="py-12">
@@ -162,16 +206,19 @@ export default function ItemDetail({ kind = 'found' }) {
       <Container className="py-16 text-center">
         <h1 className="text-ink">{t.errors.notFoundTitle}</h1>
         <p className="mx-auto mt-3 text-ink-soft">{t.errors.notFoundBody}</p>
-        <Button as={Link} to={listing.listPath} className="mt-6">
+        <Button as={Link} to={kind === 'lost' ? '/items?kind=lost' : '/items'} className="mt-6">
           {isLost ? t.detail.backLost : t.detail.back}
         </Button>
       </Container>
     );
   }
 
-  const isActive = item.status === 'active';
+  const isOpen = isOpenStatus(item.status);
+  const coords = itemCoords(item);
+  const posterId = item.postedBy?._id;
   const statusCopy = {
     active: isLost ? t.detail.lostActive : t.detail.active,
+    matched: t.detail.matched,
     returned: isLost ? t.detail.lostReturned : t.detail.returned,
     expired: t.detail.expired,
     cancelled: t.detail.cancelled,
@@ -184,8 +231,8 @@ export default function ItemDetail({ kind = 'found' }) {
           {t.nav.home}
         </Link>
         <span className="mx-2">/</span>
-        <Link to={listing.listPath} className="hover:text-forest">
-          {isLost ? t.nav.lostItems : t.nav.items}
+        <Link to={kind === 'lost' ? '/items?kind=lost' : '/items'} className="hover:text-forest">
+          {t.nav.items}
         </Link>
         <span className="mx-2">/</span>
         <span className="text-ink">{item.title}</span>
@@ -210,6 +257,9 @@ export default function ItemDetail({ kind = 'found' }) {
           <p className="mt-2 text-sm font-medium text-forest">
             {statusCopy[item.status] || statusCopy.active}
           </p>
+          <div className="mt-4">
+            <StatusTracker status={item.status} />
+          </div>
 
           {!editing ? (
             <>
@@ -221,11 +271,35 @@ export default function ItemDetail({ kind = 'found' }) {
                   label={isLost ? t.detail.lostDate : t.detail.foundDate}
                   value={formatDate(getItemDate(item))}
                 />
+                {item.postedBy?.name && (
+                  <Info
+                    label={t.detail.postedBy}
+                    value={
+                      posterId ? (
+                        <Link to={`/users/${posterId}`} className="text-forest hover:underline">
+                          {item.postedBy.name}
+                        </Link>
+                      ) : (
+                        item.postedBy.name
+                      )
+                    }
+                  />
+                )}
               </dl>
 
-              {isActive && (
+              <div className="mt-6">
+                <p className="mb-2 text-sm font-semibold text-ink">{t.map.title}</p>
+                <LocationMap lat={coords.lat} lng={coords.lng} />
+              </div>
+
+              {isOpen && (
                 <div className="mt-8">
                   <ContactFounder phone={item.contactPhone} kind={kind} />
+                  {!item.contactPhone && !isOwner && (
+                    <p className="rounded-[1.35rem] border border-line/70 bg-cream/80 px-4 py-3 text-sm text-ink-soft">
+                      {t.detail.noPhone}
+                    </p>
+                  )}
                   {!isOwner && (
                     <Button
                       type="button"
@@ -241,7 +315,21 @@ export default function ItemDetail({ kind = 'found' }) {
                 </div>
               )}
 
-              {!isActive && (
+              {isOpen && (
+                <ClaimPanel
+                  kind={kind}
+                  itemId={id}
+                  isOwner={isOwner}
+                  isAuthenticated={isAuthenticated}
+                  isOpen={isOpen}
+                  item={item}
+                  myClaim={myClaim}
+                  claims={claims}
+                  onRefresh={() => fetchItem({ silent: true })}
+                />
+              )}
+
+              {!isOpen && (
                 <p className="mt-8 rounded-xl bg-cream px-4 py-3 text-sm text-ink-soft">
                   {t.item.inactiveNote}
                 </p>
@@ -250,7 +338,7 @@ export default function ItemDetail({ kind = 'found' }) {
               {isOwner && (
                 <div className="mt-8 rounded-[1.35rem] border border-line/70 bg-cream/80 p-4">
                   <p className="text-sm font-semibold text-ink">{t.detail.ownerNote}</p>
-                  {isActive && (
+                  {isOpen && (
                     <p className="mt-2 text-sm text-ink-soft">
                       {t.chat.ownItem}{' '}
                       <Link to="/chats" className="font-semibold text-forest hover:underline">
@@ -258,11 +346,16 @@ export default function ItemDetail({ kind = 'found' }) {
                       </Link>
                     </p>
                   )}
-                  {isActive && (
+                  {isOpen && (
                     <div className="mt-4 flex flex-wrap gap-3">
                       <Button type="button" variant="outline" onClick={() => setEditing(true)}>
                         {t.actions.edit}
                       </Button>
+                      {item.status === 'active' && (
+                        <Button type="button" variant="outline" onClick={() => setConfirmMatched(true)}>
+                          {t.actions.markMatched}
+                        </Button>
+                      )}
                       <Button type="button" onClick={() => setConfirmReturned(true)}>
                         {isLost ? t.actions.markFound : t.actions.markReturned}
                       </Button>
@@ -297,7 +390,11 @@ export default function ItemDetail({ kind = 'found' }) {
               <Select
                 label={t.detail.district}
                 value={form.district || ''}
-                onChange={(e) => setForm({ ...form, district: e.target.value })}
+                onChange={(e) => {
+                  const district = e.target.value;
+                  setForm({ ...form, district });
+                  setPin(coordsForDistrict(district));
+                }}
                 required
               >
                 {DISTRICTS.map((name) => (
@@ -312,6 +409,12 @@ export default function ItemDetail({ kind = 'found' }) {
                 onChange={(e) => setForm({ ...form, village: e.target.value })}
                 required
               />
+              {form.district && pin && (
+                <div>
+                  <p className="mb-2 text-sm font-semibold text-ink">{t.map.pick}</p>
+                  <LocationMap lat={pin.lat} lng={pin.lng} interactive onChange={setPin} />
+                </div>
+              )}
               <Input
                 label={isLost ? t.detail.lostDate : t.detail.foundDate}
                 type="date"
@@ -324,6 +427,14 @@ export default function ItemDetail({ kind = 'found' }) {
                 value={form.contactPhone || ''}
                 onChange={(e) => setForm({ ...form, contactPhone: e.target.value })}
                 required
+              />
+              <Textarea
+                label={t.post.marks}
+                hint={t.post.marksHint}
+                rows={4}
+                maxLength={400}
+                value={form.identifyingMarks || ''}
+                onChange={(e) => setForm({ ...form, identifyingMarks: e.target.value })}
               />
               <ImageUpload
                 file={imageFile}
@@ -344,7 +455,7 @@ export default function ItemDetail({ kind = 'found' }) {
         </div>
       </div>
 
-      {!editing && isActive && <PossibleMatches itemId={id} kind={kind} />}
+      {!editing && isOpen && <PossibleMatches itemId={id} kind={kind} />}
 
       <ConfirmModal
         open={confirmCancel}
@@ -366,6 +477,17 @@ export default function ItemDetail({ kind = 'found' }) {
         title={isLost ? t.item.confirmFoundTitle : t.item.confirmReturnedTitle}
         description={t.item.confirmStatusBody}
         confirmLabel={isLost ? t.item.confirmFound : t.item.confirmReturned}
+        cancelLabel={t.common.no}
+      />
+
+      <ConfirmModal
+        open={confirmMatched}
+        onClose={() => setConfirmMatched(false)}
+        onConfirm={handleMarkMatched}
+        loading={actionLoading}
+        title={t.item.confirmMatchedTitle}
+        description={t.item.confirmMatchedBody}
+        confirmLabel={t.item.confirmMatched}
         cancelLabel={t.common.no}
       />
     </Container>

@@ -44,7 +44,7 @@ export default function RecentItems({ kind = 'found' }) {
             <h2 className="text-ink">{isLost ? t.recent.lostTitle : t.recent.foundTitle}</h2>
             <p className="mt-2 text-ink-soft">{isLost ? t.recent.lostBody : t.recent.foundBody}</p>
           </div>
-          <Button as={Link} to={listing.listPath} variant="ghost">
+          <Button as={Link} to={isLost ? '/items?kind=lost' : '/items'} variant="ghost">
             {t.recent.viewAll}
           </Button>
         </div>
@@ -73,7 +73,7 @@ export default function RecentItems({ kind = 'found' }) {
               description={isLost ? t.empty.homeLostBody : t.empty.homeItemsBody}
               action={
                 <Button as={Link} to={listing.postPath}>
-                  {isLost ? t.actions.postLost : t.actions.postFound}
+                  {t.browse.add}
                 </Button>
               }
             />

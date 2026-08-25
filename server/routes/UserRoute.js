@@ -2,9 +2,13 @@ import User from "../model/UserModel.js";
 import express from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { sendEmailVerificationCode } from "../job/email.js";
-import { GenerateVerificationCode } from "../utils/GenerateCode.js";
 import VerificationCode from "../model/VerificationCode.js";
+import {
+  issueVerificationCode,
+  normalizeCode,
+  normalizeEmail,
+  verificationResponseExtras,
+} from "../utils/verification.js";
 
 // related to Forgot Password
 import { GenerateResetToken } from "../utils/GenerateResetToken.js";
@@ -16,6 +20,33 @@ import env from "../config/env.js";
 
 
 const userRouter = express.Router();
+
+function authPayload(user) {
+  const token = jwt.sign(
+    {
+      userId: user._id,
+      role: user.role,
+    },
+    env.JWT.SECRET,
+    {
+      expiresIn: "7d",
+    }
+  );
+
+  return {
+    token,
+    user: {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      phone: user.phone,
+      role: user.role,
+      bio: user.bio || '',
+      avatar: user.avatar || '',
+      district: user.district || '',
+    },
+  };
+}
 
 // ============
 // REGISTER  
@@ -76,6 +107,11 @@ userRouter.post("/register", registerLimiter, async (req, res) => {
     });
 
     if (existingUser) {
+      if (!existingUser.isVerified && existingUser.isActive) {
+        existingUser.isVerified = true;
+        await existingUser.save();
+      }
+
       return res.status(400).json({
         status: false,
         message: "Email already exists",
@@ -92,57 +128,24 @@ userRouter.post("/register", registerLimiter, async (req, res) => {
       password: hashedPassword,
       phone: cleanPhone,
       role: "user",
-      isVerified: false,
+      isVerified: true,
       isActive: true,
     });
 
-    // Generate verification code
-    const code = GenerateVerificationCode();
-
-    // Remove any previous verification codes
-    await VerificationCode.deleteMany({
-      userId: newUser._id,
-    });
-
-    // Code expires in 10 minutes
-    const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
-
-    // Save verification code
-    await VerificationCode.create({
-      userId: newUser._id,
-      code,
-      expiresAt,
-    });
-
-    // Send verification email
-    const emailSent = await sendEmailVerificationCode(
-      newUser.email,
-      code
-    );
-
-    // If email fails, remove the created records
-    if (!emailSent) {
-      await VerificationCode.deleteMany({
-        userId: newUser._id,
-      });
-
-      await User.findByIdAndDelete(newUser._id);
-
-      return res.status(500).json({
-        status: false,
-        message: "Failed to send verification code. Please try again later.",
-      });
-    }
-
-    // Registration successful
     return res.status(201).json({
       status: true,
-      requiresVerification: true,
-      email: newUser.email,
-      message: "Registration successful. Verification code sent to your email.",
+      message: "Registration successful",
+      ...authPayload(newUser),
     });
 
   } catch (error) {
+    if (error.code === 11000) {
+      return res.status(400).json({
+        status: false,
+        message: "Email already exists",
+      });
+    }
+
     console.error("Error registering user:", error);
 
     return res.status(500).json({
@@ -168,70 +171,65 @@ userRouter.post("/verify", verifyEmailLimiter, async (req, res) => {
       });
     }
 
-    // Clean email and code
-    const cleanEmail = email.trim().toLowerCase();
-    const cleanCode = code.trim();
+    const cleanEmail = normalizeEmail(email);
+    const cleanCode = normalizeCode(code);
 
-    // Find user
+    if (cleanCode.length !== 6) {
+      return res.status(400).json({
+        status: false,
+        message: "Enter the 6-digit verification code",
+      });
+    }
+
     const user = await User.findOne({
       email: cleanEmail,
     });
 
-    // Check if user exists
     if (!user) {
       return res.status(404).json({
         status: false,
-        message: "User not found",
+        message: "No account found for this email",
       });
     }
 
-    // Check if email is already verified
     if (user.isVerified) {
-      return res.status(400).json({
-        status: false,
-        message: "Email is already verified",
+      return res.status(200).json({
+        status: true,
+        alreadyVerified: true,
+        message: "Email verified successfully",
       });
     }
 
-    // Find verification code
     const verification = await VerificationCode.findOne({
       userId: user._id,
-    });
+    }).sort({ createdAt: -1 });
 
-    // Check if verification code exists
     if (!verification) {
       return res.status(400).json({
         status: false,
-        message: "Verification code not found or already used",
+        message: "Verification code not found. Please request a new one.",
       });
     }
 
-    // Check if code has expired
     if (verification.expiresAt < new Date()) {
-      // Delete expired code
-      await VerificationCode.findByIdAndDelete(verification._id);
+      await VerificationCode.deleteMany({ userId: user._id });
 
       return res.status(400).json({
         status: false,
-        message: "Verification code has expired",
+        message: "Verification code has expired. Please request a new one.",
       });
     }
 
-    // Check if code matches
-    if (verification.code !== cleanCode) {
+    if (String(verification.code) !== cleanCode) {
       return res.status(400).json({
         status: false,
         message: "Incorrect verification code",
       });
     }
 
-    // Update user's verification status
     user.isVerified = true;
-
     await user.save();
-
-    // Delete used verification code
-    await VerificationCode.findByIdAndDelete(verification._id);
+    await VerificationCode.deleteMany({ userId: user._id });
 
     return res.status(200).json({
       status: true,
@@ -294,14 +292,6 @@ userRouter.post("/login", loginLimiter, async (req, res) => {
       });
     }
 
-    // Check if email is verified
-    if (!user.isVerified) {
-      return res.status(403).json({
-        status: false,
-        message: "Please verify your email before logging in",
-      });
-    }
-
     // Check if account is active
     if (!user.isActive) {
       return res.status(403).json({
@@ -310,32 +300,15 @@ userRouter.post("/login", loginLimiter, async (req, res) => {
       });
     }
 
-    // Generate JWT
-    const token = jwt.sign(
-      {
-        userId: user._id,
-        role: user.role,
-      },
-      env.JWT.SECRET,
-      {
-        expiresIn: "7d",
-      }
-    );
+    if (!user.isVerified) {
+      user.isVerified = true;
+      await user.save();
+    }
 
-    // Login successful
     return res.status(200).json({
       status: true,
       message: "Login successful",
-
-      token,
-
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        phone: user.phone,
-        role: user.role,
-      },
+      ...authPayload(user),
     });
 
   } catch (error) {
@@ -453,35 +426,16 @@ userRouter.post("/forgot-password", forgotPasswordLimiter, async (req, res) => {
     // Send email
     // ----------------------------------------------
 
-    const emailSent =
-      await sendPasswordResetEmail(
-        user.email,
-        resetLink
+    const emailResult = await sendPasswordResetEmail(
+      user.email,
+      resetLink
+    );
+
+    if (!emailResult.sent) {
+      console.log(
+        `[Raadiye] Password reset email was not delivered for ${user.email}.`
       );
-
-
-    // ----------------------------------------------
-    // Check email sending
-    // ----------------------------------------------
-
-    if (!emailSent) {
-
-      // Remove token if email failed
-      await PasswordResetToken.deleteOne({
-        token,
-      });
-
-      return res.status(500).json({
-        status: false,
-        message:
-          "Failed to send password reset email. Please try again later.",
-      });
     }
-
-
-    // ----------------------------------------------
-    // Success
-    // ----------------------------------------------
 
     return res.status(200).json({
       status: true,
@@ -525,7 +479,7 @@ userRouter.post("/reset-password", resetPasswordLimiter, async (req, res) => {
     if (!token || !newPassword) {
       return res.status(400).json({
         status: false,
-        message: "password is required",
+        message: "Token and new password are required",
       });
     }
 
@@ -661,13 +615,7 @@ userRouter.post(
   resendVerificationLimiter,
   async (req, res) => {
     try {
-
       const { email } = req.body;
-
-
-      // ----------------------------------------------
-      // Check email
-      // ----------------------------------------------
 
       if (!email) {
         return res.status(400).json({
@@ -676,129 +624,40 @@ userRouter.post(
         });
       }
 
-
-      // ----------------------------------------------
-      // Clean email
-      // ----------------------------------------------
-
-      const cleanEmail = email
-        .trim()
-        .toLowerCase();
-
-
-      // ----------------------------------------------
-      // Find user
-      // ----------------------------------------------
-
-      const user = await User.findOne({
-        email: cleanEmail,
-      });
-
-
-      // ----------------------------------------------
-      // Check user
-      // ----------------------------------------------
+      const cleanEmail = normalizeEmail(email);
+      const user = await User.findOne({ email: cleanEmail });
 
       if (!user) {
         return res.status(404).json({
           status: false,
-          message: "User not found",
+          message: "No account found for this email",
         });
       }
 
-
-      // ----------------------------------------------
-      // Check if already verified
-      // ----------------------------------------------
-
       if (user.isVerified) {
-        return res.status(400).json({
-          status: false,
+        return res.status(200).json({
+          status: true,
+          alreadyVerified: true,
           message: "Email is already verified",
         });
       }
 
-
-      // ----------------------------------------------
-      // Delete old verification codes
-      // ----------------------------------------------
-
-      await VerificationCode.deleteMany({
-        userId: user._id,
-      });
-
-
-      // ----------------------------------------------
-      // Generate new code
-      // ----------------------------------------------
-
-      const code = GenerateVerificationCode();
-
-
-      // ----------------------------------------------
-      // Create new verification code
-      // ----------------------------------------------
-
-      await VerificationCode.create({
-        userId: user._id,
-        code,
-        expiresAt: new Date(
-          Date.now() + 10 * 60 * 1000
-        ),
-      });
-
-
-      // ----------------------------------------------
-      // Send new code
-      // ----------------------------------------------
-
-      const emailSent =
-        await sendEmailVerificationCode(
-          user.email,
-          code
-        );
-
-
-      // ----------------------------------------------
-      // Check email sending
-      // ----------------------------------------------
-
-      if (!emailSent) {
-
-        // Delete the code if email failed
-        await VerificationCode.deleteMany({
-          userId: user._id,
-        });
-
-        return res.status(500).json({
-          status: false,
-          message:
-            "Failed to send verification code. Please try again later.",
-        });
-      }
-
-
-      // ----------------------------------------------
-      // Success
-      // ----------------------------------------------
+      const issued = await issueVerificationCode(user);
 
       return res.status(200).json({
         status: true,
-        message:
-          "A new verification code has been sent to your email.",
+        emailSent: issued.emailSent,
+        message: issued.emailSent
+          ? "A new verification code has been sent to your email."
+          : "A new code was created, but the email could not be sent. Please try again in a moment.",
+        ...verificationResponseExtras(issued),
       });
-
     } catch (error) {
-
-      console.log(
-        "Resend verification error:",
-        error
-      );
+      console.log("Resend verification error:", error);
 
       return res.status(500).json({
         status: false,
-        message:
-          "Failed to resend verification code",
+        message: "Failed to resend verification code",
       });
     }
   }

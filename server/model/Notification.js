@@ -9,17 +9,15 @@ const notificationSchema = new mongoose.Schema(
     },
     type: {
       type: String,
-      enum: ['match'],
-      default: 'match',
+      enum: ['match', 'message', 'claim'],
+      required: true,
     },
     sourceKind: {
       type: String,
       enum: ['found', 'lost'],
-      required: true,
     },
     sourceItem: {
       type: mongoose.Schema.Types.ObjectId,
-      required: true,
     },
     sourceTitle: {
       type: String,
@@ -28,11 +26,9 @@ const notificationSchema = new mongoose.Schema(
     matchedKind: {
       type: String,
       enum: ['found', 'lost'],
-      required: true,
     },
     matchedItem: {
       type: mongoose.Schema.Types.ObjectId,
-      required: true,
     },
     matchedTitle: {
       type: String,
@@ -42,6 +38,22 @@ const notificationSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    chat: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Chat',
+    },
+    senderName: {
+      type: String,
+      default: '',
+    },
+    preview: {
+      type: String,
+      default: '',
+    },
+    itemTitle: {
+      type: String,
+      default: '',
+    },
     read: {
       type: Boolean,
       default: false,
@@ -50,8 +62,16 @@ const notificationSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-notificationSchema.index({ user: 1, createdAt: -1 });
-notificationSchema.index({ user: 1, sourceItem: 1, matchedItem: 1 }, { unique: true });
+notificationSchema.index({ user: 1, updatedAt: -1 });
+notificationSchema.index({ user: 1, type: 1, chat: 1, read: 1 });
+notificationSchema.index(
+  { user: 1, sourceItem: 1, matchedItem: 1 },
+  {
+    unique: true,
+    name: 'uniq_match_user_pair',
+    partialFilterExpression: { type: 'match' },
+  }
+);
 
 const Notification = mongoose.model('Notification', notificationSchema);
 

@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { useI18n } from '../context/LanguageContext';
 import { useNotifications } from '../context/NotificationContext';
 import { formatChatTime } from '../utils/helpers';
+import { notificationCopy } from '../utils/notifications';
 import { usePageTitle } from '../hooks/usePageTitle';
 import EmptyState from '../components/ui/EmptyState';
 import Button from '../components/ui/Button';
@@ -32,7 +33,9 @@ export default function Notifications() {
         <EmptyState title={t.notify.empty} description={t.notify.emptyBody} />
       ) : (
         <ul className="overflow-hidden rounded-[1.35rem] border border-line/80 bg-paper shadow-card">
-          {notifications.map((item) => (
+          {notifications.map((item) => {
+            const copy = notificationCopy(item, t);
+            return (
             <li key={item.id} className="border-b border-line/70 last:border-b-0">
               <Link
                 to={item.href}
@@ -44,14 +47,16 @@ export default function Notifications() {
                   !item.read && 'bg-forest-light/30'
                 )}
               >
-                <span className="font-semibold text-ink">{item.matchedTitle}</span>
-                <span className="text-sm text-muted">
-                  {t.notify.forItem}: {item.sourceTitle}
+                <span className="text-[11px] font-semibold uppercase tracking-wide text-forest">
+                  {copy.kind}
                 </span>
+                <span className="font-semibold text-ink">{copy.title}</span>
+                <span className="text-sm text-muted">{copy.body}</span>
                 <span className="text-xs text-muted">{formatChatTime(item.createdAt)}</span>
               </Link>
             </li>
-          ))}
+            );
+          })}
         </ul>
       )}
     </Container>

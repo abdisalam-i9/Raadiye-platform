@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate, useSearchParams } from 'react-router-dom';
 import Layout from './components/Layout';
 import ProtectedRoute from './components/ProtectedRoute';
 import Home from './pages/Home';
@@ -17,17 +17,28 @@ import MyItems from './pages/MyItems';
 import ChatInbox from './pages/ChatInbox';
 import ChatRoom from './pages/ChatRoom';
 import Notifications from './pages/Notifications';
+import Profile from './pages/Profile';
+import PublicProfile from './pages/PublicProfile';
+import AdminDashboard from './pages/AdminDashboard';
 import AdminCategories from './pages/AdminCategories';
 import NotFound from './pages/NotFound';
+
+function LostItemsRedirect() {
+  const [params] = useSearchParams();
+  const next = new URLSearchParams(params);
+  if (!next.get('kind')) next.set('kind', 'lost');
+  const query = next.toString();
+  return <Navigate to={query ? `/items?${query}` : '/items?kind=lost'} replace />;
+}
 
 function App() {
   return (
     <Layout>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/items" element={<Items kind="found" />} />
+        <Route path="/items" element={<Items />} />
         <Route path="/items/:id" element={<ItemDetail kind="found" />} />
-        <Route path="/lost-items" element={<Items kind="lost" />} />
+        <Route path="/lost-items" element={<LostItemsRedirect />} />
         <Route path="/lost-items/:id" element={<ItemDetail kind="lost" />} />
         <Route path="/about" element={<About />} />
         <Route path="/services" element={<Services />} />
@@ -38,21 +49,15 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password/:token" element={<ResetPassword />} />
         <Route
-          path="/post-item"
+          path="/post"
           element={
             <ProtectedRoute>
-              <PostItem kind="found" />
+              <PostItem />
             </ProtectedRoute>
           }
         />
-        <Route
-          path="/post-lost"
-          element={
-            <ProtectedRoute>
-              <PostItem kind="lost" />
-            </ProtectedRoute>
-          }
-        />
+        <Route path="/post-item" element={<Navigate to="/items?add=1&kind=found" replace />} />
+        <Route path="/post-lost" element={<Navigate to="/items?add=1&kind=lost" replace />} />
         <Route
           path="/my-items"
           element={
@@ -82,6 +87,23 @@ function App() {
           element={
             <ProtectedRoute>
               <Notifications />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/users/:id" element={<PublicProfile />} />
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute adminOnly>
+              <AdminDashboard />
             </ProtectedRoute>
           }
         />

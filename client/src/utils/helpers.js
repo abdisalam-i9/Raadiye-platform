@@ -20,6 +20,30 @@ export function formatChatTime(value) {
   return `${date.getDate()} ${getT().dates.months[date.getMonth()]} ${time}`;
 }
 
+export function formatChatDay(value) {
+  const t = getT();
+  if (!value) return '';
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return '';
+  const today = new Date();
+  const yesterday = new Date();
+  yesterday.setDate(today.getDate() - 1);
+  if (date.toDateString() === today.toDateString()) return t.chat.today;
+  if (date.toDateString() === yesterday.toDateString()) return t.chat.yesterday;
+  return `${date.getDate()} ${t.dates.months[date.getMonth()]} ${date.getFullYear()}`;
+}
+
+export function getInitials(name) {
+  if (!name) return 'R';
+  return name
+    .split(' ')
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0])
+    .join('')
+    .toUpperCase();
+}
+
 export function getCategoryName(category) {
   const other = getT().common.other;
   if (!category) return other;

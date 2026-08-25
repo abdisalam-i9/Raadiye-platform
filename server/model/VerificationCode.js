@@ -23,6 +23,9 @@ const verificationCodeSchema = new mongoose.Schema(
   }
 );
 
+verificationCodeSchema.index({ userId: 1, createdAt: -1 });
+verificationCodeSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
+
 const VerificationCode = mongoose.model(
   "VerificationCode",
   verificationCodeSchema

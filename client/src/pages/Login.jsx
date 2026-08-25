@@ -16,7 +16,6 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [needsVerification, setNeedsVerification] = useState(false);
   const { login } = useAuth();
   const { showToast } = useToast();
   const navigate = useNavigate();
@@ -28,7 +27,6 @@ export default function Login() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     setError('');
-    setNeedsVerification(false);
     setLoading(true);
 
     try {
@@ -38,9 +36,6 @@ export default function Login() {
     } catch (err) {
       const message = getErrorMessage(err);
       setError(message);
-      if (err.status === 403) {
-        setNeedsVerification(true);
-      }
     } finally {
       setLoading(false);
     }
@@ -68,18 +63,6 @@ export default function Login() {
         />
 
         {error && <Alert type="error">{error}</Alert>}
-
-        {needsVerification && (
-          <p className="text-sm text-ink-soft">
-            {t.auth.needsVerify}{' '}
-            <Link
-              to={`/verify-email?email=${encodeURIComponent(email)}`}
-              className="font-semibold text-forest hover:underline"
-            >
-              {t.auth.verifyNow}
-            </Link>
-          </p>
-        )}
 
         <Button type="submit" className="w-full" loading={loading} size="lg">
           {loading ? t.auth.loggingIn : t.auth.loginAction}

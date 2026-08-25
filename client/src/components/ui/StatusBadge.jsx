@@ -3,6 +3,7 @@ import { useI18n } from '../../context/LanguageContext';
 
 const styles = {
   active: 'bg-forest-light text-forest',
+  matched: 'bg-info-light text-info',
   returned: 'bg-info-light text-info',
   expired: 'bg-line/80 text-muted',
   cancelled: 'bg-danger-light text-danger',

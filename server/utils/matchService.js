@@ -11,7 +11,32 @@ function categoryId(value) {
   return String(value?._id || value || '');
 }
 
+function haversineKm(left, right) {
+  if (
+    left.lat == null ||
+    left.lng == null ||
+    right.lat == null ||
+    right.lng == null
+  ) {
+    return null;
+  }
+  const toRad = (value) => (Number(value) * Math.PI) / 180;
+  const dLat = toRad(right.lat - left.lat);
+  const dLng = toRad(right.lng - left.lng);
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(toRad(left.lat)) * Math.cos(toRad(right.lat)) * Math.sin(dLng / 2) ** 2;
+  return 6371 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
 function locationScore(left, right) {
+  const km = haversineKm(left, right);
+  if (km != null) {
+    if (km <= 1) return 1;
+    if (km <= 3) return 0.82;
+    if (km <= 8) return 0.55;
+  }
+
   const sameDistrict = Boolean(left.district && right.district && left.district === right.district);
   const village = diceCoefficient(left.village, right.village);
 
@@ -42,6 +67,8 @@ function serializeItem(item) {
     category: doc.category,
     district: doc.district,
     village: doc.village,
+    lat: doc.lat,
+    lng: doc.lng,
     image: doc.image || '',
     status: doc.status,
     foundDate: doc.foundDate,

@@ -4,12 +4,12 @@ import LostItem from '../model/LostItem.js';
 export async function expireItems() {
   try {
     const found = await FoundItem.updateMany(
-      { status: 'active', expiresAt: { $lte: new Date() } },
+      { status: { $in: ['active', 'matched'] }, expiresAt: { $lte: new Date() } },
       { $set: { status: 'expired' } }
     );
 
     const lost = await LostItem.updateMany(
-      { status: 'active', expiresAt: { $lte: new Date() } },
+      { status: { $in: ['active', 'matched'] }, expiresAt: { $lte: new Date() } },
       { $set: { status: 'expired' } }
     );
 

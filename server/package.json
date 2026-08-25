@@ -1,13 +1,14 @@
 {
-  "name": "baafiye-server",
+  "name": "raadiye-server",
   "version": "1.0.0",
   "private": true,
-  "description": "Baafiye Express API",
+  "description": "Raadiye Express API",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "seed": "node seed/run.js"
+    "seed": "node seed/run.js",
+    "seed:examples": "node seed/examples.js"
   },
   "type": "module",
   "dependencies": {

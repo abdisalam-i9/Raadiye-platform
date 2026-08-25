@@ -1,11 +1,9 @@
 import { useEffect } from 'react';
-import { getT } from '../i18n';
 
 export function usePageTitle(title) {
   useEffect(() => {
+    if (!title) return undefined;
     document.title = title;
-    return () => {
-      document.title = getT().meta.default;
-    };
+    return undefined;
   }, [title]);
 }

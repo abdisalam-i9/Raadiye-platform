@@ -1,6 +1,6 @@
 import express from 'express';
 import { contactLimiter } from '../middleware/rateLimiter.js';
-import { sendContactEmail } from '../job/email.js';
+import { isEmailConfigured, sendContactEmail } from '../job/email.js';
 
 const contactRouter = express.Router();
 
@@ -38,6 +38,13 @@ contactRouter.post('/', contactLimiter, async (req, res) => {
       return res.status(400).json({
         status: false,
         message: 'Message must be at least 10 characters',
+      });
+    }
+
+    if (!isEmailConfigured()) {
+      return res.status(503).json({
+        status: false,
+        message: 'Email is not configured. Please try again later.',
       });
     }
 

@@ -67,7 +67,7 @@ export async function startChat({ itemId, itemKind, userId }) {
     throw error;
   }
 
-  if (item.status !== 'active') {
+  if (item.status !== 'active' && item.status !== 'matched') {
     const error = new Error('This item is no longer available for chat');
     error.status = 400;
     throw error;

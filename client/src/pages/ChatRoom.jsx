@@ -1,13 +1,14 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { HiArrowLeft, HiArrowUp } from 'react-icons/hi';
+import { HiArrowLeft, HiArrowUp, HiOutlineShieldCheck } from 'react-icons/hi';
 import { api } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { useI18n } from '../context/LanguageContext';
+import { useNotifications } from '../context/NotificationContext';
 import { useSocket } from '../context/SocketContext';
 import { useToast } from '../context/ToastContext';
 import { cn } from '../utils/cn';
-import { formatChatTime, getErrorMessage } from '../utils/helpers';
+import { formatChatDay, formatChatTime, getErrorMessage, getInitials } from '../utils/helpers';
 import { usePageTitle } from '../hooks/usePageTitle';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
 import Button from '../components/ui/Button';
@@ -20,12 +21,19 @@ function itemPath(chat) {
   return chat.itemKind === 'lost' ? `/lost-items/${chat.itemId}` : `/items/${chat.itemId}`;
 }
 
+function dayKey(value) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return '';
+  return date.toDateString();
+}
+
 export default function ChatRoom() {
   const { id } = useParams();
   const { t } = useI18n();
   const { user } = useAuth();
   const { socket } = useSocket();
   const { showToast } = useToast();
+  const { refresh: refreshNotifications } = useNotifications();
   const navigate = useNavigate();
   const [chat, setChat] = useState(null);
   const [messages, setMessages] = useState([]);
@@ -56,6 +64,7 @@ export default function ChatRoom() {
         if (cancelled) return;
         setChat(data.chat);
         setMessages(data.chat?.messages || []);
+        refreshNotifications();
       } catch (err) {
         if (!cancelled) {
           showToast(getErrorMessage(err, t.chat.loadError), 'error');
@@ -70,7 +79,7 @@ export default function ChatRoom() {
     return () => {
       cancelled = true;
     };
-  }, [id, navigate, showToast, t.chat.loadError]);
+  }, [id, navigate, showToast, t.chat.loadError, refreshNotifications]);
 
   useEffect(() => {
     if (!socket || !id) return undefined;
@@ -145,40 +154,71 @@ export default function ChatRoom() {
         >
           <HiArrowLeft className="size-5" />
         </Link>
+        <span className="grid size-10 shrink-0 place-items-center rounded-full bg-white/15 text-xs font-bold">
+          {getInitials(other?.name)}
+        </span>
         <div className="min-w-0 flex-1">
           <p className="truncate font-semibold">{other?.name || t.chat.you}</p>
-          <Link to={itemPath(chat)} className="block truncate text-xs text-white/80 hover:underline">
-            {t.chat.about}: {chat.itemTitle}
+          <Link to={itemPath(chat)} className="mt-0.5 inline-flex max-w-full items-center gap-1.5">
+            <span
+              className={cn(
+                'shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide',
+                chat.itemKind === 'lost' ? 'bg-white/15 text-white' : 'bg-white text-forest'
+              )}
+            >
+              {chat.itemKind === 'lost' ? t.chat.itemLost : t.chat.itemFound}
+            </span>
+            <span className="truncate text-xs text-white/80 hover:underline">{chat.itemTitle}</span>
           </Link>
         </div>
       </header>
 
       <div className="chat-wallpaper min-h-0 flex-1 overflow-y-auto px-3 py-4 sm:px-5">
+        <p className="mx-auto mb-4 flex max-w-md items-start gap-2 rounded-2xl bg-paper/95 px-3 py-2.5 text-xs leading-5 text-ink-soft shadow-sm">
+          <HiOutlineShieldCheck className="mt-0.5 size-4 shrink-0 text-forest" />
+          {t.chat.safety}
+        </p>
+
         {messages.length === 0 ? (
           <p className="mx-auto max-w-xs rounded-2xl bg-paper/90 px-4 py-3 text-center text-sm text-muted shadow-sm">
             {t.chat.noMessages}
           </p>
         ) : (
           <ul className="space-y-2">
-            {messages.map((message) => {
+            {messages.map((message, index) => {
               const mine = String(message.senderId) === String(user?.id);
+              const showDay = index === 0 || dayKey(messages[index - 1].createdAt) !== dayKey(message.createdAt);
               return (
-                <li key={message.id} className={cn('flex', mine ? 'justify-end' : 'justify-start')}>
-                  <div
-                    className={cn(
-                      'max-w-[82%] rounded-2xl px-3 py-2 shadow-sm',
-                      mine
-                        ? 'rounded-br-md bg-forest text-white'
-                        : 'rounded-bl-md bg-paper text-ink'
-                    )}
-                  >
-                    {!mine && (
-                      <p className="mb-0.5 text-[11px] font-semibold text-forest">{message.senderName}</p>
-                    )}
-                    <p className="whitespace-pre-wrap text-sm leading-6">{message.text}</p>
-                    <p className={cn('mt-1 text-right text-[10px]', mine ? 'text-white/70' : 'text-muted')}>
-                      {formatChatTime(message.createdAt)}
+                <li key={message.id}>
+                  {showDay && (
+                    <p className="mb-3 mt-4 text-center text-[11px] font-semibold uppercase tracking-wide text-muted">
+                      <span className="rounded-full bg-paper/90 px-3 py-1 shadow-sm">
+                        {formatChatDay(message.createdAt)}
+                      </span>
                     </p>
+                  )}
+                  <div className={cn('flex items-end gap-2', mine ? 'justify-end' : 'justify-start')}>
+                    {!mine && (
+                      <span className="mb-1 grid size-7 shrink-0 place-items-center rounded-full bg-forest text-[10px] font-bold text-white">
+                        {getInitials(message.senderName || other?.name)}
+                      </span>
+                    )}
+                    <div
+                      className={cn(
+                        'max-w-[82%] rounded-2xl px-3 py-2 shadow-sm',
+                        mine
+                          ? 'rounded-br-md bg-forest text-white'
+                          : 'rounded-bl-md bg-paper text-ink'
+                      )}
+                    >
+                      {!mine && (
+                        <p className="mb-0.5 text-[11px] font-semibold text-forest">{message.senderName}</p>
+                      )}
+                      <p className="whitespace-pre-wrap text-sm leading-6">{message.text}</p>
+                      <p className={cn('mt-1 text-right text-[10px]', mine ? 'text-white/70' : 'text-muted')}>
+                        {formatChatTime(message.createdAt)}
+                      </p>
+                    </div>
                   </div>
                 </li>
               );

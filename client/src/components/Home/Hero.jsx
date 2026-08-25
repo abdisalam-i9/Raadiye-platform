@@ -59,13 +59,10 @@ export default function Hero() {
 
           <div className="mt-6 flex flex-wrap gap-3">
             <Button as={Link} to="/items">
-              {t.actions.search}
+              {t.actions.browseItems}
             </Button>
-            <Button as={Link} to="/lost-items" variant="outline">
-              {t.actions.searchLost}
-            </Button>
-            <Button as={Link} to="/post-item" variant="ghost">
-              {t.actions.postFound}
+            <Button as={Link} to="/items?add=1" variant="outline">
+              {t.browse.add}
             </Button>
           </div>
         </div>

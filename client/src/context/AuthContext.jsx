@@ -54,7 +54,14 @@ export function AuthProvider({ children }) {
   }, [persistAuth]);
 
   const register = useCallback(async (payload) => {
-    return api.auth.register(payload);
+    const data = await api.auth.register(payload);
+    if (data.token && data.user) persistAuth(data.token, data.user);
+    return data;
+  }, [persistAuth]);
+
+  const updateUser = useCallback((nextUser) => {
+    setUser(nextUser);
+    setStoredUser(nextUser);
   }, []);
 
   const handleUnauthorized = useCallback(() => {
@@ -72,8 +79,9 @@ export function AuthProvider({ children }) {
       register,
       logout,
       handleUnauthorized,
+      updateUser,
     }),
-    [user, token, loading, login, register, logout, handleUnauthorized]
+    [user, token, loading, login, register, logout, handleUnauthorized, updateUser]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -3,28 +3,11 @@ import User from '../model/UserModel.js';
 import { sendMatchEmail } from '../job/email.js';
 import env from '../config/env.js';
 import { findMatches } from './matchService.js';
+import { emitNotification } from './notifications.js';
 
 function itemHref(kind, id) {
   const path = kind === 'lost' ? `/lost-items/${id}` : `/items/${id}`;
   return `${env.CLIENT_URL}${path}`;
-}
-
-export function serializeNotification(doc) {
-  const id = String(doc._id);
-  return {
-    id,
-    type: doc.type,
-    sourceKind: doc.sourceKind,
-    sourceItemId: String(doc.sourceItem),
-    sourceTitle: doc.sourceTitle,
-    matchedKind: doc.matchedKind,
-    matchedItemId: String(doc.matchedItem),
-    matchedTitle: doc.matchedTitle,
-    score: doc.score,
-    read: doc.read,
-    createdAt: doc.createdAt,
-    href: doc.matchedKind === 'lost' ? `/lost-items/${doc.matchedItem}` : `/items/${doc.matchedItem}`,
-  };
 }
 
 async function createMatchNotification({ userId, sourceKind, sourceItem, matchedKind, matchedItem, score, io }) {
@@ -41,8 +24,7 @@ async function createMatchNotification({ userId, sourceKind, sourceItem, matched
       score,
     });
 
-    const payload = serializeNotification(notification);
-    io?.to(`user:${userId}`).emit('new-notification', { notification: payload });
+    emitNotification(io, userId, notification, { created: true });
 
     const user = await User.findById(userId).select('email name');
     if (user?.email) {
@@ -55,7 +37,7 @@ async function createMatchNotification({ userId, sourceKind, sourceItem, matched
       }).catch((error) => console.log('Match email error:', error));
     }
 
-    return payload;
+    return notification;
   } catch (error) {
     if (error.code === 11000) return null;
     throw error;

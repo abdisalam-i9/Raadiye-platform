@@ -5,26 +5,26 @@
     <meta name="theme-color" content="#0f7a62" />
     <meta
       name="description"
-      content="Baafiye waa goob bulsho oo dadka ku nool Muqdisho ku raadiyaan alaabtii ka luntay, una soo gudbiyaan wixii ay heleen."
+      content="Raadiye waa goob bulsho oo dadka ku nool Muqdisho ku raadiyaan alaabtii ka luntay, una soo gudbiyaan wixii ay heleen."
     />
-    <meta property="og:title" content="Baafiye — Shay lumay? Raadi halkan" />
+    <meta property="og:title" content="Raadiye — Shay lumay? Raadi halkan" />
     <meta
       property="og:description"
       content="Ka raadi alaabta la helay, ama soo gudbi shay aad heshay si qofkii lahaa uu dib ugu helo."
     />
     <meta property="og:type" content="website" />
-    <title>Baafiye — Raadi Alaabta Kaa Lumay</title>
+    <title>Raadiye — Raadi Alaabta Kaa Lumay</title>
     <script>
       (function () {
         try {
-          var theme = localStorage.getItem('baafiye-theme');
+          var theme = localStorage.getItem('raadiye-theme') || localStorage.getItem('baafiye-theme');
           if (theme !== 'light' && theme !== 'dark') {
             theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
           }
           if (theme === 'dark') document.documentElement.classList.add('dark');
           var meta = document.querySelector('meta[name="theme-color"]');
           if (meta) meta.content = theme === 'dark' ? '#0c1612' : '#0f7a62';
-          var lang = localStorage.getItem('baafiye-lang');
+          var lang = localStorage.getItem('raadiye-lang') || localStorage.getItem('baafiye-lang');
           document.documentElement.lang = lang === 'en' ? 'en' : 'so';
         } catch (e) {}
       })();

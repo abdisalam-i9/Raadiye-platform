@@ -1,10 +1,12 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
-export const THEME_STORAGE_KEY = 'baafiye-theme';
+export const THEME_STORAGE_KEY = 'raadiye-theme';
+const LEGACY_THEME_STORAGE_KEY = 'baafiye-theme';
 
 function readStoredTheme() {
   try {
-    const saved = localStorage.getItem(THEME_STORAGE_KEY);
+    const saved =
+      localStorage.getItem(THEME_STORAGE_KEY) || localStorage.getItem(LEGACY_THEME_STORAGE_KEY);
     if (saved === 'light' || saved === 'dark') return saved;
   } catch {
     /* ignore */

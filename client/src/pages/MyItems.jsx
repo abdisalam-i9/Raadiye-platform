@@ -4,6 +4,7 @@ import { api, listingApi } from '../services/api';
 import { useToast } from '../context/ToastContext';
 import { useI18n } from '../context/LanguageContext';
 import { getListing, getItemDate } from '../constants/listings';
+import { isOpenStatus } from '../constants/geo';
 import {
   formatDate,
   getCategoryName,
@@ -35,8 +36,8 @@ export default function MyItems() {
   usePageTitle(t.meta.myItems);
 
   const TABS = [
-    { id: 'found', label: t.nav.items },
-    { id: 'lost', label: t.nav.lostItems },
+    { id: 'found', label: t.browse.kindFound },
+    { id: 'lost', label: t.browse.kindLost },
   ];
 
   const listing = getListing(tab);
@@ -120,11 +121,8 @@ export default function MyItems() {
         description={t.empty.myItemsBody}
         action={
           <div className="flex flex-wrap gap-2">
-            <Button as={Link} to="/post-item" size="sm">
-              {t.actions.postFound}
-            </Button>
-            <Button as={Link} to="/post-lost" variant="outline" size="sm">
-              {t.actions.postLost}
+            <Button as={Link} to="/items?add=1" size="sm">
+              {t.browse.add}
             </Button>
           </div>
         }
@@ -156,7 +154,7 @@ export default function MyItems() {
           description={isLost ? t.empty.myLostBody : t.empty.myItemsBody}
           action={
             <Button as={Link} to={listing.postPath}>
-              {isLost ? t.actions.postLost : t.actions.postFound}
+              {t.browse.add}
             </Button>
           }
         />
@@ -186,7 +184,7 @@ export default function MyItems() {
                 </p>
 
                 <div className="mt-5 flex flex-wrap gap-3">
-                  {item.status === 'active' ? (
+                  {isOpenStatus(item.status) ? (
                     <>
                       <Button as={Link} to={`${listing.listPath}/${item._id}`} variant="outline" size="sm">
                         {t.actions.view}

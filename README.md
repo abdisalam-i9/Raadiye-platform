@@ -1,18 +1,19 @@
-# Baafiye
+# Raadiye
 
-Lost and found platform for Mogadishu. People can post items they found, report items they lost, and contact the poster directly.
+Lost and found platform for Mogadishu. People can post items they found, report items they lost, prove ownership with private identifying marks, then chat or call after a claim is accepted.
 
 The repo is split into a React client and an Express server, both talking to MongoDB.
 
 ## Features
 
-- Register, verify email, log in, and reset a forgotten password
-- Post found items and lost items (authenticated)
-- Browse, search, and filter listings by category and district
-- Mark your posts as returned or cancel them
-- Admin category management
-- Contact form
-- Somali UI copy, focused on Mogadishu districts
+- Register and log in immediately (no email verification)
+- Password reset by email only
+- Post found items and lost items with private identifying marks
+- Browse, search, and filter listings by category, district, date, and status
+- Ownership claims: phone is hidden until the poster accepts the marks
+- In-app chat, match suggestions, and notifications
+- Admin dashboard with listing and community statistics
+- Somali-first UI, focused on Mogadishu districts
 - Rate limiting on auth, posting, and contact endpoints
 - Automatic expiry of listings after 90 days
 
@@ -29,7 +30,7 @@ The repo is split into a React client and an Express server, both talking to Mon
 ## Project structure
 
 ```
-Baafiye Platform/
+Raadiye / Baafiye Platform/
 ├── client/          React frontend (Vite)
 ├── server/          Express API
 ├── package.json     Root scripts to install and run both apps
@@ -72,7 +73,7 @@ MONGO_URI=mongodb://localhost:27017/baafiye
 JWT_SECRET=replace_with_a_long_random_secret
 ```
 
-Optional but needed for email (registration verification, password reset, and contact):
+Optional but needed for password-reset and contact emails:
 
 ```
 EMAIL_USER=your_gmail@gmail.com
@@ -118,6 +119,7 @@ npm run seed --prefix server
 
 ## Notes
 
-- Registration still depends on email sending succeeding. If `EMAIL_USER` / `EMAIL_PASS` are empty, verification emails will fail until you add a Gmail App Password.
+- New accounts can sign in right away. Email is used for password reset, not signup verification.
+- Keep `MONGO_URI` on the existing database name if you already have local data.
 - Change the admin password before any public use.
 - Do not commit `.env` files. Only `.env.example` files belong in git.

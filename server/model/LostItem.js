@@ -22,6 +22,14 @@ const lostItemSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+    lat: {
+      type: Number,
+      default: null,
+    },
+    lng: {
+      type: Number,
+      default: null,
+    },
     lostDate: {
       type: Date,
       required: true,
@@ -34,9 +42,15 @@ const lostItemSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    identifyingMarks: {
+      type: String,
+      default: '',
+      trim: true,
+      maxlength: 400,
+    },
     status: {
       type: String,
-      enum: ['active', 'returned', 'expired', 'cancelled'],
+      enum: ['active', 'matched', 'returned', 'expired', 'cancelled'],
       default: 'active',
     },
     postedBy: {
@@ -58,6 +72,9 @@ const lostItemSchema = new mongoose.Schema(
 
 lostItemSchema.index({ status: 1, createdAt: -1 });
 lostItemSchema.index({ postedBy: 1, createdAt: -1 });
+lostItemSchema.index({ category: 1, status: 1, createdAt: -1 });
+lostItemSchema.index({ district: 1, status: 1 });
+lostItemSchema.index({ lostDate: -1 });
 
 const LostItem = mongoose.model('LostItem', lostItemSchema);
 

@@ -40,7 +40,7 @@ export default function Button({
       disabled={isButton ? disabled || loading : undefined}
       aria-busy={loading || undefined}
       className={cn(
-        'inline-flex items-center justify-center gap-2 rounded-full font-semibold transition duration-200',
+        'inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-full font-semibold transition duration-200',
         variants[variant],
         sizes[size],
         className

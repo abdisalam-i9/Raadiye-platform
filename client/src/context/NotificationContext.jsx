@@ -37,19 +37,27 @@ export function NotificationProvider({ children }) {
   useEffect(() => {
     if (!socket) return undefined;
 
-    const onNew = ({ notification } = {}) => {
+    const onNew = ({ notification, created } = {}) => {
       if (!notification?.id) return;
       setNotifications((current) => {
-        if (current.some((item) => item.id === notification.id)) return current;
-        return [notification, ...current].slice(0, 50);
+        const without = current.filter((item) => item.id !== notification.id);
+        return [notification, ...without].slice(0, 50);
       });
-      setUnreadCount((count) => count + (notification.read ? 0 : 1));
-      showToast(t.notify.toast, 'info');
+      if (created !== false && !notification.read) {
+        setUnreadCount((count) => count + 1);
+        const toast =
+          notification.type === 'message'
+            ? t.notify.messageToast
+            : notification.type === 'claim'
+              ? t.notify.claimToast
+              : t.notify.toast;
+        showToast(toast, 'info');
+      }
     };
 
     socket.on('new-notification', onNew);
     return () => socket.off('new-notification', onNew);
-  }, [socket, showToast, t.notify.toast]);
+  }, [socket, showToast, t.notify.messageToast, t.notify.claimToast, t.notify.toast]);
 
   const markRead = useCallback(async (id) => {
     setNotifications((current) => {

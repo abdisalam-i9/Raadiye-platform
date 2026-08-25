@@ -13,7 +13,7 @@ export default class ErrorBoundary extends Component {
   }
 
   componentDidCatch(error, info) {
-    console.error('Baafiye UI error:', error, info);
+    console.error('Raadiye UI error:', error, info);
   }
 
   render() {

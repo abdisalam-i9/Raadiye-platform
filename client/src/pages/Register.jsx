@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 import { useI18n } from '../context/LanguageContext';
 import { getErrorMessage } from '../utils/helpers';
 import { usePageTitle } from '../hooks/usePageTitle';
@@ -20,6 +21,7 @@ export default function Register() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const { register } = useAuth();
+  const { showToast } = useToast();
   const navigate = useNavigate();
 
   usePageTitle(t.meta.register);
@@ -35,8 +37,9 @@ export default function Register() {
     setLoading(true);
 
     try {
-      const data = await register(form);
-      navigate(`/verify-email?email=${encodeURIComponent(data.email || form.email)}`);
+      await register(form);
+      showToast(t.auth.registerSuccess);
+      navigate('/');
     } catch (err) {
       setError(getErrorMessage(err));
     } finally {

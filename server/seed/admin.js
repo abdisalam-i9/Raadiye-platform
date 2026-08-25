@@ -5,7 +5,7 @@ import env from '../config/env.js';
 export async function seedAdmin() {
   const email = (env.ADMIN.EMAIL || '').trim().toLowerCase();
   const password = env.ADMIN.PASSWORD;
-  const name = (env.ADMIN.NAME || 'Baafiye Admin').trim();
+  const name = (env.ADMIN.NAME || 'Raadiye Admin').trim();
   const phone = (env.ADMIN.PHONE || '+252610000000').trim();
 
   if (!email || !password) {

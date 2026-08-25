@@ -3,7 +3,8 @@ import en from './en.json';
 
 export const DEFAULT_LOCALE = 'so';
 export const LOCALES = ['so', 'en'];
-export const LANG_STORAGE_KEY = 'baafiye-lang';
+export const LANG_STORAGE_KEY = 'raadiye-lang';
+const LEGACY_LANG_STORAGE_KEY = 'baafiye-lang';
 
 export const dictionaries = { so, en };
 
@@ -15,7 +16,9 @@ export function normalizeLocale(value) {
 
 export function readStoredLocale() {
   try {
-    return normalizeLocale(localStorage.getItem(LANG_STORAGE_KEY));
+    return normalizeLocale(
+      localStorage.getItem(LANG_STORAGE_KEY) || localStorage.getItem(LEGACY_LANG_STORAGE_KEY)
+    );
   } catch {
     return DEFAULT_LOCALE;
   }

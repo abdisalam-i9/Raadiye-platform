@@ -2,18 +2,22 @@ import { Server } from 'socket.io';
 import jwt from 'jsonwebtoken';
 import env from '../config/env.js';
 import Chat from '../model/Chat.js';
+import Notification from '../model/Notification.js';
 import { addMessage, isParticipant, serializeMessage } from '../utils/chatService.js';
+import { notifyNewMessage } from '../utils/notifyMessage.js';
 
 export function emitNewMessage(io, chat, message) {
   const payload = {
     chatId: String(chat._id),
     message: serializeMessage(message),
   };
-  if (!io) return payload;
-  io.to(`chat:${chat._id}`).emit('new-message', payload);
-  (chat.participants || []).forEach((participant) => {
-    io.to(`user:${String(participant._id || participant)}`).emit('new-message', payload);
-  });
+  if (io) {
+    io.to(`chat:${chat._id}`).emit('new-message', payload);
+    (chat.participants || []).forEach((participant) => {
+      io.to(`user:${String(participant._id || participant)}`).emit('new-message', payload);
+    });
+  }
+  notifyNewMessage({ chat, message, io }).catch((error) => console.log('Message notify error:', error));
   return payload;
 }
 
@@ -55,6 +59,10 @@ export function attachChatSocket(httpServer, app) {
           return;
         }
         socket.join(`chat:${chatId}`);
+        await Notification.updateMany(
+          { user: socket.userId, type: 'message', chat: chatId, read: false },
+          { read: true }
+        );
       } catch (error) {
         console.log('Join chat error:', error);
         socket.emit('chat-error', { message: 'Failed to join chat' });

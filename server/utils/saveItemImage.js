@@ -27,11 +27,11 @@ const EXTENSIONS = {
   'image/gif': '.gif',
 };
 
-function uploadToCloudinary(file) {
+function uploadToCloudinary(file, folder = 'items') {
   return new Promise((resolve, reject) => {
     const stream = cloudinary.uploader.upload_stream(
       {
-        folder: 'baafiye/items',
+        folder: `raadiye/${folder}`,
         resource_type: 'image',
       },
       (error, result) => {
@@ -46,16 +46,17 @@ function uploadToCloudinary(file) {
   });
 }
 
-export async function saveItemImage(file) {
+export async function saveItemImage(file, { folder = 'items' } = {}) {
   if (!file?.buffer) return '';
 
   if (hasCloudinary) {
-    return uploadToCloudinary(file);
+    return uploadToCloudinary(file, folder);
   }
 
   const extension = EXTENSIONS[file.mimetype] || '.jpg';
   const filename = `${Date.now()}-${crypto.randomBytes(8).toString('hex')}${extension}`;
-  await mkdir(uploadsDir, { recursive: true });
-  await writeFile(path.join(uploadsDir, filename), file.buffer);
-  return `/uploads/items/${filename}`;
+  const dir = path.join(__dirname, '..', 'uploads', folder);
+  await mkdir(dir, { recursive: true });
+  await writeFile(path.join(dir, filename), file.buffer);
+  return `/uploads/${folder}/${filename}`;
 }

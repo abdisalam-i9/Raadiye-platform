@@ -4,6 +4,7 @@ import { HiBell } from 'react-icons/hi';
 import { useI18n } from '../context/LanguageContext';
 import { useNotifications } from '../context/NotificationContext';
 import { formatChatTime } from '../utils/helpers';
+import { notificationCopy } from '../utils/notifications';
 import { cn } from '../utils/cn';
 
 export default function NotificationBell() {
@@ -41,7 +42,7 @@ export default function NotificationBell() {
       <button
         type="button"
         className={cn(
-          'relative grid size-10 place-items-center rounded-full border border-line/80 bg-paper/80 text-ink shadow-sm transition',
+          'relative grid size-9 place-items-center rounded-full border border-line/80 bg-paper/80 text-ink shadow-sm transition',
           'hover:border-forest/30 hover:bg-forest-light dark:border-white/10',
           open && 'border-forest/35 bg-forest-light'
         )}
@@ -80,7 +81,9 @@ export default function NotificationBell() {
             <p className="px-3 py-6 text-center text-sm text-muted">{t.notify.empty}</p>
           ) : (
             <ul className="max-h-80 overflow-y-auto">
-              {preview.map((item) => (
+              {preview.map((item) => {
+                const copy = notificationCopy(item, t);
+                return (
                 <li key={item.id}>
                   <button
                     type="button"
@@ -91,14 +94,16 @@ export default function NotificationBell() {
                     )}
                     onClick={() => openItem(item)}
                   >
-                    <span className="font-semibold text-ink">{item.matchedTitle}</span>
-                    <span className="text-xs text-muted">
-                      {t.notify.forItem}: {item.sourceTitle}
+                    <span className="text-[10px] font-semibold uppercase tracking-wide text-forest">
+                      {copy.kind}
                     </span>
+                    <span className="font-semibold text-ink">{copy.title}</span>
+                    <span className="text-xs text-muted">{copy.body}</span>
                     <span className="text-[11px] text-muted">{formatChatTime(item.createdAt)}</span>
                   </button>
                 </li>
-              ))}
+                );
+              })}
             </ul>
           )}
 

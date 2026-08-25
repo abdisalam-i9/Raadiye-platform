@@ -38,6 +38,22 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+
+    bio: {
+      type: String,
+      default: '',
+      maxlength: 400,
+    },
+
+    avatar: {
+      type: String,
+      default: '',
+    },
+
+    district: {
+      type: String,
+      default: '',
+    },
   },
   {
     timestamps: true,

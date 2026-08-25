@@ -1,6 +1,20 @@
 const API_BASE = import.meta.env.VITE_API_URL || '/api';
-const TOKEN_KEY = 'baafiye_token';
-const USER_KEY = 'baafiye_user';
+const TOKEN_KEY = 'raadiye_token';
+const USER_KEY = 'raadiye_user';
+const LEGACY_TOKEN_KEY = 'baafiye_token';
+const LEGACY_USER_KEY = 'baafiye_user';
+
+function readMigrated(key, legacyKey) {
+  const current = localStorage.getItem(key);
+  if (current) return current;
+  const legacy = localStorage.getItem(legacyKey);
+  if (legacy) {
+    localStorage.setItem(key, legacy);
+    localStorage.removeItem(legacyKey);
+    return legacy;
+  }
+  return null;
+}
 
 let onUnauthorized = null;
 
@@ -9,7 +23,7 @@ export function setUnauthorizedHandler(handler) {
 }
 
 export function getToken() {
-  return localStorage.getItem(TOKEN_KEY);
+  return readMigrated(TOKEN_KEY, LEGACY_TOKEN_KEY);
 }
 
 export function setToken(token) {
@@ -21,7 +35,7 @@ export function setToken(token) {
 }
 
 export function getStoredUser() {
-  const raw = localStorage.getItem(USER_KEY);
+  const raw = readMigrated(USER_KEY, LEGACY_USER_KEY);
   if (!raw) return null;
   try {
     return JSON.parse(raw);
@@ -108,15 +122,26 @@ function createListingClient(basePath) {
       const qs = query.toString();
       return request(`${basePath}${qs ? `?${qs}` : ''}`);
     },
-    getById: (id) => request(`${basePath}/${id}`),
+    getById: (id) => request(`${basePath}/${id}`, { auth: true }),
     create: (payload) => request(basePath, { method: 'POST', body: payload, auth: true }),
     update: (id, payload) =>
       request(`${basePath}/${id}`, { method: 'PUT', body: payload, auth: true }),
     delete: (id) => request(`${basePath}/${id}`, { method: 'DELETE', auth: true }),
     markReturned: (id) =>
       request(`${basePath}/${id}/returned`, { method: 'PATCH', auth: true }),
+    markMatched: (id) =>
+      request(`${basePath}/${id}/matched`, { method: 'PATCH', auth: true }),
     myItems: () => request(`${basePath}/my-items`, { auth: true }),
     getMatches: (id) => request(`${basePath}/${id}/matches`),
+    createClaim: (id, payload) =>
+      request(`${basePath}/${id}/claims`, { method: 'POST', body: payload, auth: true }),
+    listClaims: (id) => request(`${basePath}/${id}/claims`, { auth: true }),
+    reviewClaim: (id, claimId, status) =>
+      request(`${basePath}/${id}/claims/${claimId}`, {
+        method: 'PATCH',
+        body: { status },
+        auth: true,
+      }),
   };
 }
 
@@ -166,5 +191,19 @@ export const api = {
     list: () => request('/notifications', { auth: true }),
     markRead: (id) => request(`/notifications/${id}/read`, { method: 'PATCH', auth: true }),
     markAllRead: () => request('/notifications/read-all', { method: 'PATCH', auth: true }),
+  },
+
+  users: {
+    me: () => request('/users/me', { auth: true }),
+    updateMe: (payload) => request('/users/me', { method: 'PUT', body: payload, auth: true }),
+    getById: (id) => request(`/users/${id}`),
+  },
+
+  admin: {
+    stats: () => request('/admin/stats', { auth: true }),
+  },
+
+  vision: {
+    suggest: (payload) => request('/vision/suggest', { method: 'POST', body: payload, auth: true }),
   },
 };

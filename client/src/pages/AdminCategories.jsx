@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { api } from '../services/api';
 import { useI18n } from '../context/LanguageContext';
 import { useCategories } from '../context/CategoriesContext';
@@ -86,7 +87,15 @@ export default function AdminCategories() {
 
   return (
     <Container className="py-10 sm:py-14">
-      <PageHeader title={t.admin.title} description={t.admin.body} />
+      <PageHeader
+        title={t.admin.title}
+        description={t.admin.body}
+        action={
+          <Button as={Link} to="/admin" variant="outline">
+            {t.dashboard.title}
+          </Button>
+        }
+      />
 
       <div className="grid gap-8 lg:grid-cols-[1fr_1.2fr]">
         <form

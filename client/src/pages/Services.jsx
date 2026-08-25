@@ -3,6 +3,7 @@ import {
   HiOutlineSearch,
   HiOutlinePlus,
   HiOutlineShieldCheck,
+  HiOutlineChat,
   HiOutlineUsers,
 } from 'react-icons/hi';
 import { useI18n } from '../context/LanguageContext';
@@ -17,32 +18,32 @@ export default function Services() {
 
   const services = [
     {
-      icon: HiOutlineSearch,
+      icon: HiOutlinePlus,
       title: t.services.foundBrowse,
       description: t.services.foundBrowseBody,
-      link: '/items',
-      linkLabel: t.actions.search,
+      link: '/register',
+      linkLabel: t.services.cta,
     },
     {
-      icon: HiOutlinePlus,
+      icon: HiOutlineShieldCheck,
       title: t.services.foundPost,
       description: t.services.foundPostBody,
-      link: '/post-item',
-      linkLabel: t.actions.postFound,
+      link: '/items?add=1',
+      linkLabel: t.browse.add,
     },
     {
       icon: HiOutlineSearch,
       title: t.services.lostBrowse,
       description: t.services.lostBrowseBody,
-      link: '/lost-items',
-      linkLabel: t.actions.searchLost,
+      link: '/items',
+      linkLabel: t.actions.search,
     },
     {
-      icon: HiOutlinePlus,
+      icon: HiOutlineChat,
       title: t.services.lostPost,
       description: t.services.lostPostBody,
-      link: '/post-lost',
-      linkLabel: t.actions.postLost,
+      link: '/items?kind=lost',
+      linkLabel: t.browse.kindLost,
     },
     {
       icon: HiOutlineShieldCheck,

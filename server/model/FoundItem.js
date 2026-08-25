@@ -22,6 +22,14 @@ const foundItemSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+    lat: {
+      type: Number,
+      default: null,
+    },
+    lng: {
+      type: Number,
+      default: null,
+    },
     foundDate: {
       type: Date,
       required: true,
@@ -34,9 +42,15 @@ const foundItemSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    identifyingMarks: {
+      type: String,
+      default: '',
+      trim: true,
+      maxlength: 400,
+    },
     status: {
       type: String,
-      enum: ['active', 'returned', 'expired', 'cancelled'],
+      enum: ['active', 'matched', 'returned', 'expired', 'cancelled'],
       default: 'active',
     },
     postedBy: {
@@ -58,6 +72,9 @@ const foundItemSchema = new mongoose.Schema(
 
 foundItemSchema.index({ status: 1, createdAt: -1 });
 foundItemSchema.index({ postedBy: 1, createdAt: -1 });
+foundItemSchema.index({ category: 1, status: 1, createdAt: -1 });
+foundItemSchema.index({ district: 1, status: 1 });
+foundItemSchema.index({ foundDate: -1 });
 
 const FoundItem = mongoose.model('FoundItem', foundItemSchema);
 

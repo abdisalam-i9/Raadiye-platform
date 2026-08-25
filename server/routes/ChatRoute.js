@@ -2,6 +2,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import authMiddleware from '../middleware/authMiddleware.js';
 import Chat from '../model/Chat.js';
+import Notification from '../model/Notification.js';
 import { emitNewMessage } from '../socket/chatSocket.js';
 import {
   addMessage,
@@ -67,6 +68,11 @@ router.get('/:id', authMiddleware, async (req, res) => {
     if (!isParticipant(chat, req.user.userId)) {
       return res.status(403).json({ status: false, message: 'You are not part of this chat' });
     }
+
+    await Notification.updateMany(
+      { user: req.user.userId, type: 'message', chat: chat._id, read: false },
+      { read: true }
+    );
 
     await populateChat(chat, { includeMessages: true });
 

@@ -8,7 +8,8 @@ import StatusBadge from '../ui/StatusBadge';
 
 export default function ItemCard({ item, kind = 'found' }) {
   const { t } = useI18n();
-  const listing = getListing(kind);
+  const resolvedKind = item.kind || kind;
+  const listing = getListing(resolvedKind);
   const location = [item.district, item.village].filter(Boolean).join(' • ');
 
   return (
@@ -24,6 +25,13 @@ export default function ItemCard({ item, kind = 'found' }) {
         />
         <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/40 to-transparent" />
         <div className="absolute left-3 top-3 flex items-center gap-2">
+          <span
+            className={`rounded-full px-2.5 py-1 text-[11px] font-semibold shadow-sm backdrop-blur ${
+              resolvedKind === 'lost' ? 'bg-clay-light text-clay' : 'bg-forest-light text-forest'
+            }`}
+          >
+            {resolvedKind === 'lost' ? t.browse.kindLost : t.browse.kindFound}
+          </span>
           <span className="rounded-full bg-paper/90 px-2.5 py-1 text-[11px] font-semibold text-forest shadow-sm backdrop-blur">
             {getCategoryName(item.category)}
           </span>

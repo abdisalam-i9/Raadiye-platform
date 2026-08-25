@@ -2,14 +2,14 @@ import express from 'express';
 import mongoose from 'mongoose';
 import authMiddleware from '../middleware/authMiddleware.js';
 import Notification from '../model/Notification.js';
-import { serializeNotification } from '../utils/notifyMatch.js';
+import { serializeNotification } from '../utils/notifications.js';
 
 const router = express.Router();
 
 router.get('/', authMiddleware, async (req, res) => {
   try {
     const notifications = await Notification.find({ user: req.user.userId })
-      .sort({ createdAt: -1 })
+      .sort({ updatedAt: -1 })
       .limit(50);
     const unreadCount = await Notification.countDocuments({
       user: req.user.userId,
