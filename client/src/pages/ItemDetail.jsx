@@ -14,6 +14,7 @@ import ItemImage from '../components/ui/ItemImage';
 import ImageUpload from '../components/ui/ImageUpload';
 import StatusBadge from '../components/ui/StatusBadge';
 import ContactFounder from '../components/ui/ContactFounder';
+import PossibleMatches from '../components/PossibleMatches';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
 import Select from '../components/ui/Select';
@@ -342,6 +343,8 @@ export default function ItemDetail({ kind = 'found' }) {
           )}
         </div>
       </div>
+
+      {!editing && <PossibleMatches itemId={id} kind={kind} />}
 
       <ConfirmModal
         open={confirmCancel}

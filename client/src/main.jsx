@@ -5,6 +5,7 @@ import App from './App';
 import { AuthProvider } from './context/AuthContext';
 import { SocketProvider } from './context/SocketContext';
 import { ToastProvider } from './context/ToastContext';
+import { NotificationProvider } from './context/NotificationContext';
 import { CategoriesProvider } from './context/CategoriesContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { LanguageProvider } from './context/LanguageContext';
@@ -19,11 +20,13 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           <AuthProvider>
             <SocketProvider>
               <ToastProvider>
-                <CategoriesProvider>
-                  <ErrorBoundary>
-                    <App />
-                  </ErrorBoundary>
-                </CategoriesProvider>
+                <NotificationProvider>
+                  <CategoriesProvider>
+                    <ErrorBoundary>
+                      <App />
+                    </ErrorBoundary>
+                  </CategoriesProvider>
+                </NotificationProvider>
               </ToastProvider>
             </SocketProvider>
           </AuthProvider>

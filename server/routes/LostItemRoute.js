@@ -5,4 +5,5 @@ export default createListingRouter({
   Model: LostItem,
   dateField: 'lostDate',
   label: 'lost item',
+  kind: 'lost',
 });

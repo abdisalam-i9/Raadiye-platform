@@ -15,6 +15,7 @@
     "register": "Sign up",
     "myItems": "My items",
     "chats": "Messages",
+    "notifications": "Notifications",
     "logout": "Log out",
     "admin": "Admin"
   },
@@ -134,6 +135,7 @@
     "openMenu": "Open menu",
     "closeMenu": "Close menu",
     "openAccount": "Open account menu",
+    "openNotifications": "Open notifications",
     "search": "Search items",
     "toggleTheme": "Switch light or dark mode",
     "lightMode": "Use light mode",
@@ -290,6 +292,24 @@
     "itemFound": "Found item",
     "itemLost": "Lost item"
   },
+  "match": {
+    "title": "Possible matches",
+    "body": "These listings look similar based on the name, category, and place. Confirm before you contact anyone.",
+    "score": "match",
+    "sameCategory": "Same category",
+    "sameDistrict": "Same district",
+    "similarTitle": "Similar name"
+  },
+  "notify": {
+    "title": "Notifications",
+    "body": "We will tell you when a lost or found item looks similar to yours.",
+    "empty": "No notifications yet",
+    "emptyBody": "When a similar item is posted, it will appear here.",
+    "markAll": "Mark all as read",
+    "viewAll": "View all",
+    "forItem": "For",
+    "toast": "A possible match was found."
+  },
   "api": {
     "Invalid email or password": "Invalid email or password.",
     "Please verify your email before logging in": "Please verify your email before logging in.",
@@ -316,7 +336,9 @@
     "Failed to load chats": "Conversations could not be loaded.",
     "Failed to start chat": "The chat could not be started.",
     "Failed to load chat": "The chat could not be loaded.",
-    "Failed to send message": "The message could not be sent."
+    "Failed to send message": "The message could not be sent.",
+    "Failed to find matches": "Possible matches could not be loaded.",
+    "Failed to load notifications": "Notifications could not be loaded."
   },
   "language": {
     "so": "SO",
@@ -339,6 +361,7 @@
     "myItems": "My items — Baafiye",
     "chats": "Messages — Baafiye",
     "chat": "Chat — Baafiye",
+    "notifications": "Notifications — Baafiye",
     "admin": "Manage categories — Baafiye",
     "notFound": "Page not found — Baafiye",
     "foundList": "Search Found Items — Baafiye",

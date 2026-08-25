@@ -16,6 +16,7 @@ import PostItem from './pages/PostItem';
 import MyItems from './pages/MyItems';
 import ChatInbox from './pages/ChatInbox';
 import ChatRoom from './pages/ChatRoom';
+import Notifications from './pages/Notifications';
 import AdminCategories from './pages/AdminCategories';
 import NotFound from './pages/NotFound';
 
@@ -73,6 +74,14 @@ function App() {
           element={
             <ProtectedRoute>
               <ChatRoom />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/notifications"
+          element={
+            <ProtectedRoute>
+              <Notifications />
             </ProtectedRoute>
           }
         />

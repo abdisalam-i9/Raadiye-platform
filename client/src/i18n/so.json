@@ -15,6 +15,7 @@
     "register": "Isdiiwaangeli",
     "myItems": "Alaabtayda",
     "chats": "Fariimaha",
+    "notifications": "Ogeysiisyada",
     "logout": "Ka bax",
     "admin": "Maamul"
   },
@@ -134,6 +135,7 @@
     "openMenu": "Fur menu",
     "closeMenu": "Xir menu",
     "openAccount": "Fur menu-ga akoonka",
+    "openNotifications": "Fur ogeysiisyada",
     "search": "Raadi shay",
     "toggleTheme": "Beddel moodka iftiin/madow",
     "lightMode": "Isticmaal moodka iftiinka",
@@ -290,6 +292,24 @@
     "itemFound": "Shay la helay",
     "itemLost": "Shay lumay"
   },
+  "match": {
+    "title": "Suurtagal inay isku waafaqaan",
+    "body": "Qoraalladan waxay u egyihiin magaca, qaybta, iyo meesha. Xaqiiji ka hor intaadan qof la xiriirin.",
+    "score": "waafaqid",
+    "sameCategory": "Isla qaybta",
+    "sameDistrict": "Isla degmada",
+    "similarTitle": "Magac isku dhow"
+  },
+  "notify": {
+    "title": "Ogeysiisyada",
+    "body": "Waxaan kuu sheegi doonnaa marka shay lumay ama la helay uu u ekaado kanaga.",
+    "empty": "Weli ogeysiis ma jiro",
+    "emptyBody": "Marka shay la mid ah la soo gudbiyo, waxaad halkan ka arki doontaa.",
+    "markAll": "Dhammaan u calaamadee la akhriyay",
+    "viewAll": "Arag dhammaan",
+    "forItem": "Ku saabsan",
+    "toast": "Suurtagal ah in shay la isku waafaqay."
+  },
   "api": {
     "Invalid email or password": "Email-ka ama erayga sirta ah waa khalad.",
     "Please verify your email before logging in": "Fadlan xaqiiji email-kaaga kahor intaadan gelin.",
@@ -316,7 +336,9 @@
     "Failed to load chats": "Wada hadallada lama soo dejin karin.",
     "Failed to start chat": "Wada hadalka lama bilowdi karin.",
     "Failed to load chat": "Wada hadalka lama soo dejin karin.",
-    "Failed to send message": "Fariinta lama diri karin."
+    "Failed to send message": "Fariinta lama diri karin.",
+    "Failed to find matches": "Isku ekaanshaha lama soo dejin karin.",
+    "Failed to load notifications": "Ogeysiisyada lama soo dejin karin."
   },
   "language": {
     "so": "SO",
@@ -339,6 +361,7 @@
     "myItems": "Alaabtayda — Baafiye",
     "chats": "Fariimaha — Baafiye",
     "chat": "Wada hadal — Baafiye",
+    "notifications": "Ogeysiisyada — Baafiye",
     "admin": "Maamul qaybaha — Baafiye",
     "notFound": "Boggan lama helin — Baafiye",
     "foundList": "Raadi Alaab La Helay — Baafiye",

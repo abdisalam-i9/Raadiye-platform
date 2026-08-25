@@ -6,6 +6,8 @@ import { createItemLimiter } from '../middleware/rateLimiter.js';
 import { MOGADISHU_DISTRICTS } from '../constants/districts.js';
 import { handleItemImageUpload } from '../middleware/uploadMiddleware.js';
 import { saveItemImage } from '../utils/saveItemImage.js';
+import { findMatches } from '../utils/matchService.js';
+import { notifyMatchesForItem } from '../utils/notifyMatch.js';
 
 async function storeUploadedImage(req, res) {
   if (!req.file) return '';
@@ -18,7 +20,7 @@ async function storeUploadedImage(req, res) {
   }
 }
 
-export function createListingRouter({ Model, dateField, label }) {
+export function createListingRouter({ Model, dateField, label, kind }) {
   const router = express.Router();
 
   router.post('/', createItemLimiter, authMiddleware, handleItemImageUpload, async (req, res) => {
@@ -69,6 +71,12 @@ export function createListingRouter({ Model, dateField, label }) {
       });
 
       await item.populate('category', 'name slug');
+
+      notifyMatchesForItem({
+        item,
+        kind,
+        io: req.app.get('io'),
+      }).catch((error) => console.log('Match notify error:', error));
 
       return res.status(201).json({
         status: true,
@@ -139,6 +147,31 @@ export function createListingRouter({ Model, dateField, label }) {
     } catch (error) {
       console.log(`Get my ${label}s error:`, error);
       return res.status(500).json({ status: false, message: `Failed to get your ${label}s` });
+    }
+  });
+
+  router.get('/:id/matches', async (req, res) => {
+    try {
+      if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+        return res.status(400).json({ status: false, message: 'Invalid item ID' });
+      }
+
+      const item = await Model.findOne({ _id: req.params.id, status: 'active' }).populate(
+        'category',
+        'name slug'
+      );
+      if (!item) {
+        return res.status(404).json({
+          status: false,
+          message: 'Item not found or no longer available',
+        });
+      }
+
+      const matches = await findMatches(item, kind);
+      return res.status(200).json({ status: true, matches });
+    } catch (error) {
+      console.log(`Get ${label} matches error:`, error);
+      return res.status(500).json({ status: false, message: 'Failed to find matches' });
     }
   });
 
@@ -248,6 +281,12 @@ export function createListingRouter({ Model, dateField, label }) {
 
       await item.save();
       await item.populate('category', 'name slug');
+
+      notifyMatchesForItem({
+        item,
+        kind,
+        io: req.app.get('io'),
+      }).catch((error) => console.log('Match notify error:', error));
 
       return res.status(200).json({ status: true, message: `${label} updated successfully`, item });
     } catch (error) {

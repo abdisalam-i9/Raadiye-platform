@@ -116,6 +116,7 @@ function createListingClient(basePath) {
     markReturned: (id) =>
       request(`${basePath}/${id}/returned`, { method: 'PATCH', auth: true }),
     myItems: () => request(`${basePath}/my-items`, { auth: true }),
+    getMatches: (id) => request(`${basePath}/${id}/matches`),
   };
 }
 
@@ -159,5 +160,11 @@ export const api = {
     getById: (id) => request(`/chats/${id}`, { auth: true }),
     sendMessage: (id, text) =>
       request(`/chats/${id}/messages`, { method: 'POST', body: { text }, auth: true }),
+  },
+
+  notifications: {
+    list: () => request('/notifications', { auth: true }),
+    markRead: (id) => request(`/notifications/${id}/read`, { method: 'PATCH', auth: true }),
+    markAllRead: () => request('/notifications/read-all', { method: 'PATCH', auth: true }),
   },
 };

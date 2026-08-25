@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import {
+  HiBell,
   HiChat,
   HiChevronDown,
   HiClipboardList,
@@ -25,6 +26,7 @@ import Button from './ui/Button';
 import ThemeToggle from './ui/ThemeToggle';
 import LanguageToggle from './ui/LanguageToggle';
 import Container from './ui/Container';
+import NotificationBell from './NotificationBell';
 import { cn } from '../utils/cn';
 
 function navClass({ isActive }) {
@@ -171,6 +173,7 @@ export default function Header() {
 
           <div className="hidden min-w-0 items-center gap-2.5 lg:flex">
             {tools}
+            {isAuthenticated && <NotificationBell />}
 
             <Button as={Link} to="/post-item" size="sm" className="shadow-[0_8px_18px_rgb(15_122_98_/_0.22)]">
               <HiPlus className="size-4" />
@@ -206,6 +209,15 @@ export default function Header() {
                         <p className="truncate text-xs text-muted">{user.email}</p>
                       )}
                     </div>
+                    <Link
+                      to="/notifications"
+                      role="menuitem"
+                      className="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium text-ink transition hover:bg-forest-light/70 dark:hover:bg-forest-light"
+                      onClick={() => setUserOpen(false)}
+                    >
+                      <HiBell className="size-4 text-forest" />
+                      {t.nav.notifications}
+                    </Link>
                     <Link
                       to="/chats"
                       role="menuitem"
@@ -280,6 +292,7 @@ export default function Header() {
 
           <div className="flex items-center gap-1.5 lg:hidden">
             {tools}
+            {isAuthenticated && <NotificationBell />}
             <Link
               to="/items"
               className="grid size-9 place-items-center rounded-full text-ink-soft transition hover:bg-forest-light hover:text-forest"
@@ -377,9 +390,17 @@ export default function Header() {
                 <div className="mt-5 rounded-2xl border border-line/70 bg-cream/60 p-3 dark:bg-forest-light/40">
                   <p className="truncate px-1 text-sm font-semibold text-ink">{user?.name || user?.email}</p>
                   <Link
-                    to="/chats"
+                    to="/notifications"
                     onClick={closeMenu}
                     className="mt-2 flex items-center gap-2 rounded-xl px-2 py-2.5 text-sm font-semibold text-ink hover:bg-paper"
+                  >
+                    <HiBell className="size-4 text-forest" />
+                    {t.nav.notifications}
+                  </Link>
+                  <Link
+                    to="/chats"
+                    onClick={closeMenu}
+                    className="flex items-center gap-2 rounded-xl px-2 py-2.5 text-sm font-semibold text-ink hover:bg-paper"
                   >
                     <HiChat className="size-4 text-forest" />
                     {t.nav.chats}

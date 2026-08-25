@@ -32,6 +32,7 @@ export default function Footer() {
 
   const accountLinks = isAuthenticated
     ? [
+        { to: '/notifications', label: t.nav.notifications },
         { to: '/chats', label: t.nav.chats },
         { to: '/my-items', label: t.nav.myItems },
         { to: '/post-item', label: t.nav.postFound },

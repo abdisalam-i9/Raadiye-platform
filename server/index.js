@@ -12,6 +12,7 @@ import foundItemRouter from './routes/FoundItemRoute.js';
 import lostItemRouter from './routes/LostItemRoute.js';
 import contactRouter from './routes/ContactRoute.js';
 import chatRouter from './routes/ChatRoute.js';
+import notificationRouter from './routes/NotificationRoute.js';
 import { attachChatSocket } from './socket/chatSocket.js';
 import { expireItems } from './job/expireItems.js';
 import { seedCategories } from './seed/categories.js';
@@ -41,6 +42,7 @@ app.use('/api/items', foundItemRouter);
 app.use('/api/lost-items', lostItemRouter);
 app.use('/api/contact', contactRouter);
 app.use('/api/chats', chatRouter);
+app.use('/api/notifications', notificationRouter);
 
 async function startServer() {
   try {
