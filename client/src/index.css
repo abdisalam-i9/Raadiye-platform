@@ -166,6 +166,17 @@ h3 {
   top: 1rem;
 }
 
+.chat-wallpaper {
+  background-color: #efeae2;
+  background-image: radial-gradient(rgba(15, 122, 98, 0.1) 1.1px, transparent 1.1px);
+  background-size: 16px 16px;
+}
+
+html.dark .chat-wallpaper {
+  background-color: #0f1a16;
+  background-image: radial-gradient(rgba(61, 214, 165, 0.14) 1.1px, transparent 1.1px);
+}
+
 .glass {
   background: rgb(255 255 255 / 0.62);
   backdrop-filter: blur(18px);

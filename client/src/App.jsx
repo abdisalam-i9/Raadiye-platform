@@ -14,6 +14,8 @@ import Items from './pages/Items';
 import ItemDetail from './pages/ItemDetail';
 import PostItem from './pages/PostItem';
 import MyItems from './pages/MyItems';
+import ChatInbox from './pages/ChatInbox';
+import ChatRoom from './pages/ChatRoom';
 import AdminCategories from './pages/AdminCategories';
 import NotFound from './pages/NotFound';
 
@@ -55,6 +57,22 @@ function App() {
           element={
             <ProtectedRoute>
               <MyItems />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/chats"
+          element={
+            <ProtectedRoute>
+              <ChatInbox />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/chats/:id"
+          element={
+            <ProtectedRoute>
+              <ChatRoom />
             </ProtectedRoute>
           }
         />

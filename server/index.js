@@ -1,3 +1,4 @@
+import http from 'http';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import express from 'express';
@@ -10,6 +11,8 @@ import categoryRouter from './routes/CategoryRoute.js';
 import foundItemRouter from './routes/FoundItemRoute.js';
 import lostItemRouter from './routes/LostItemRoute.js';
 import contactRouter from './routes/ContactRoute.js';
+import chatRouter from './routes/ChatRoute.js';
+import { attachChatSocket } from './socket/chatSocket.js';
 import { expireItems } from './job/expireItems.js';
 import { seedCategories } from './seed/categories.js';
 import { seedAdmin } from './seed/admin.js';
@@ -37,6 +40,7 @@ app.use('/api/categories', categoryRouter);
 app.use('/api/items', foundItemRouter);
 app.use('/api/lost-items', lostItemRouter);
 app.use('/api/contact', contactRouter);
+app.use('/api/chats', chatRouter);
 
 async function startServer() {
   try {
@@ -52,7 +56,9 @@ async function startServer() {
     setInterval(expireItems, 60 * 60 * 1000);
 
     const PORT = env.PORT;
-    app.listen(PORT, () => {
+    const httpServer = http.createServer(app);
+    attachChatSocket(httpServer, app);
+    httpServer.listen(PORT, () => {
       console.log(`Server is running on port ${PORT}`);
     });
   } catch (error) {

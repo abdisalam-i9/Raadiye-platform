@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
+import { HiOutlineChat } from 'react-icons/hi';
 import { useAuth } from '../context/AuthContext';
 import { useCategories } from '../context/CategoriesContext';
 import { useToast } from '../context/ToastContext';
-import { listingApi } from '../services/api';
+import { api, listingApi } from '../services/api';
 import { DISTRICTS } from '../constants/locations';
 import { getItemDate, getListing } from '../constants/listings';
 import { useI18n } from '../context/LanguageContext';
@@ -40,6 +41,7 @@ export default function ItemDetail({ kind = 'found' }) {
   const [confirmReturned, setConfirmReturned] = useState(false);
   const [form, setForm] = useState({});
   const [imageFile, setImageFile] = useState(null);
+  const [chatStarting, setChatStarting] = useState(false);
 
   usePageTitle(item ? `${item.title} ${t.meta.itemSuffix}` : t.meta.itemFallback);
 
@@ -112,6 +114,23 @@ export default function ItemDetail({ kind = 'found' }) {
     } finally {
       setActionLoading(false);
       setConfirmCancel(false);
+    }
+  };
+
+  const handleStartChat = async () => {
+    if (!isAuthenticated) {
+      navigate(`/login?redirect=${encodeURIComponent(`${listing.listPath}/${id}`)}`);
+      return;
+    }
+
+    setChatStarting(true);
+    try {
+      const data = await api.chats.start({ itemId: id, itemKind: kind });
+      navigate(`/chats/${data.chat.id}`);
+    } catch (err) {
+      showToast(getErrorMessage(err, t.chat.error), 'error');
+    } finally {
+      setChatStarting(false);
     }
   };
 
@@ -206,6 +225,18 @@ export default function ItemDetail({ kind = 'found' }) {
               {isActive && (
                 <div className="mt-8">
                   <ContactFounder phone={item.contactPhone} kind={kind} />
+                  {!isOwner && (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="mt-4"
+                      loading={chatStarting}
+                      onClick={handleStartChat}
+                    >
+                      <HiOutlineChat className="size-4" />
+                      {isAuthenticated ? t.chat.start : t.chat.loginToChat}
+                    </Button>
+                  )}
                 </div>
               )}
 
@@ -218,6 +249,14 @@ export default function ItemDetail({ kind = 'found' }) {
               {isOwner && (
                 <div className="mt-8 rounded-[1.35rem] border border-line/70 bg-cream/80 p-4">
                   <p className="text-sm font-semibold text-ink">{t.detail.ownerNote}</p>
+                  {isActive && (
+                    <p className="mt-2 text-sm text-ink-soft">
+                      {t.chat.ownItem}{' '}
+                      <Link to="/chats" className="font-semibold text-forest hover:underline">
+                        {t.nav.chats}
+                      </Link>
+                    </p>
+                  )}
                   {isActive && (
                     <div className="mt-4 flex flex-wrap gap-3">
                       <Button type="button" variant="outline" onClick={() => setEditing(true)}>

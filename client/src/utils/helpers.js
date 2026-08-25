@@ -8,6 +8,18 @@ export function formatDate(value) {
   return `${date.getDate()} ${t.dates.months[date.getMonth()]} ${date.getFullYear()}`;
 }
 
+export function formatChatTime(value) {
+  if (!value) return '';
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return '';
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  const time = `${hours}:${minutes}`;
+  const today = new Date();
+  if (date.toDateString() === today.toDateString()) return time;
+  return `${date.getDate()} ${getT().dates.months[date.getMonth()]} ${time}`;
+}
+
 export function getCategoryName(category) {
   const other = getT().common.other;
   if (!category) return other;

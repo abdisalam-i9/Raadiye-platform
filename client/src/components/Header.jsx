@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import {
+  HiChat,
   HiChevronDown,
   HiClipboardList,
   HiCollection,
@@ -206,6 +207,15 @@ export default function Header() {
                       )}
                     </div>
                     <Link
+                      to="/chats"
+                      role="menuitem"
+                      className="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium text-ink transition hover:bg-forest-light/70 dark:hover:bg-forest-light"
+                      onClick={() => setUserOpen(false)}
+                    >
+                      <HiChat className="size-4 text-forest" />
+                      {t.nav.chats}
+                    </Link>
+                    <Link
                       to="/my-items"
                       role="menuitem"
                       className="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium text-ink transition hover:bg-forest-light/70 dark:hover:bg-forest-light"
@@ -367,9 +377,17 @@ export default function Header() {
                 <div className="mt-5 rounded-2xl border border-line/70 bg-cream/60 p-3 dark:bg-forest-light/40">
                   <p className="truncate px-1 text-sm font-semibold text-ink">{user?.name || user?.email}</p>
                   <Link
-                    to="/my-items"
+                    to="/chats"
                     onClick={closeMenu}
                     className="mt-2 flex items-center gap-2 rounded-xl px-2 py-2.5 text-sm font-semibold text-ink hover:bg-paper"
+                  >
+                    <HiChat className="size-4 text-forest" />
+                    {t.nav.chats}
+                  </Link>
+                  <Link
+                    to="/my-items"
+                    onClick={closeMenu}
+                    className="flex items-center gap-2 rounded-xl px-2 py-2.5 text-sm font-semibold text-ink hover:bg-paper"
                   >
                     <HiClipboardList className="size-4 text-forest" />
                     {t.nav.myItems}

@@ -152,4 +152,12 @@ export const api = {
   contact: {
     send: (payload) => request('/contact', { method: 'POST', body: payload }),
   },
+
+  chats: {
+    list: () => request('/chats', { auth: true }),
+    start: (payload) => request('/chats', { method: 'POST', body: payload, auth: true }),
+    getById: (id) => request(`/chats/${id}`, { auth: true }),
+    sendMessage: (id, text) =>
+      request(`/chats/${id}/messages`, { method: 'POST', body: { text }, auth: true }),
+  },
 };

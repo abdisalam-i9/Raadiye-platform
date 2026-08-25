@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 import { AuthProvider } from './context/AuthContext';
+import { SocketProvider } from './context/SocketContext';
 import { ToastProvider } from './context/ToastContext';
 import { CategoriesProvider } from './context/CategoriesContext';
 import { ThemeProvider } from './context/ThemeContext';
@@ -16,13 +17,15 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <ThemeProvider>
         <LanguageProvider>
           <AuthProvider>
-            <ToastProvider>
-              <CategoriesProvider>
-                <ErrorBoundary>
-                  <App />
-                </ErrorBoundary>
-              </CategoriesProvider>
-            </ToastProvider>
+            <SocketProvider>
+              <ToastProvider>
+                <CategoriesProvider>
+                  <ErrorBoundary>
+                    <App />
+                  </ErrorBoundary>
+                </CategoriesProvider>
+              </ToastProvider>
+            </SocketProvider>
           </AuthProvider>
         </LanguageProvider>
       </ThemeProvider>
