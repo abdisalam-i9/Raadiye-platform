@@ -52,10 +52,13 @@ export function NotificationProvider({ children }) {
   }, [socket, showToast, t.notify.toast]);
 
   const markRead = useCallback(async (id) => {
-    setNotifications((current) =>
-      current.map((item) => (item.id === id ? { ...item, read: true } : item))
-    );
-    setUnreadCount((count) => Math.max(0, count - 1));
+    setNotifications((current) => {
+      const target = current.find((item) => item.id === id);
+      if (target && !target.read) {
+        setUnreadCount((count) => Math.max(0, count - 1));
+      }
+      return current.map((item) => (item.id === id ? { ...item, read: true } : item));
+    });
     try {
       const data = await api.notifications.markRead(id);
       if (typeof data.unreadCount === 'number') setUnreadCount(data.unreadCount);

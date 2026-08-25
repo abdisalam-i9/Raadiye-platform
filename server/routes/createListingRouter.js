@@ -168,7 +168,13 @@ export function createListingRouter({ Model, dateField, label, kind }) {
       }
 
       const matches = await findMatches(item, kind);
-      return res.status(200).json({ status: true, matches });
+      return res.status(200).json({
+        status: true,
+        matches: matches.map(({ item: matchedItem, ...rest }) => {
+          const { postedBy: _postedBy, ...publicItem } = matchedItem;
+          return { ...rest, item: publicItem };
+        }),
+      });
     } catch (error) {
       console.log(`Get ${label} matches error:`, error);
       return res.status(500).json({ status: false, message: 'Failed to find matches' });

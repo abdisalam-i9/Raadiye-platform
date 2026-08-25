@@ -344,7 +344,7 @@ export default function ItemDetail({ kind = 'found' }) {
         </div>
       </div>
 
-      {!editing && <PossibleMatches itemId={id} kind={kind} />}
+      {!editing && isActive && <PossibleMatches itemId={id} kind={kind} />}
 
       <ConfirmModal
         open={confirmCancel}

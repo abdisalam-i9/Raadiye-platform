@@ -150,6 +150,14 @@ export const sendPasswordResetEmail = async (email,resetLink) => {
     }
 };
 
+function escapeHtml(value) {
+    return String(value || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+}
+
 export const sendMatchEmail = async ({ to, name, sourceTitle, matchedTitle, link }) => {
     try {
         await transporter.sendMail({
@@ -160,13 +168,13 @@ export const sendMatchEmail = async ({ to, name, sourceTitle, matchedTitle, link
         <div style="max-width: 520px; margin: 40px auto; padding: 30px; background: #ffffff; border-radius: 12px; font-family: Arial, sans-serif; box-shadow: 0 4px 15px rgba(0,0,0,0.08);">
           <h2 style="color: #0f7a62; margin-bottom: 10px;">Possible match found</h2>
           <p style="color: #555; font-size: 15px;">
-            Hello ${name || ''},
+            Hello ${escapeHtml(name)},
           </p>
           <p style="color: #555; font-size: 15px;">
-            Your item <strong>${sourceTitle}</strong> looks similar to
-            <strong>${matchedTitle}</strong>.
+            Your item <strong>${escapeHtml(sourceTitle)}</strong> looks similar to
+            <strong>${escapeHtml(matchedTitle)}</strong>.
           </p>
-          <a href="${link}" style="display: inline-block; margin: 22px 0; padding: 12px 22px; background: #0f7a62; color: white; text-decoration: none; border-radius: 999px; font-weight: bold;">
+          <a href="${escapeHtml(link)}" style="display: inline-block; margin: 22px 0; padding: 12px 22px; background: #0f7a62; color: white; text-decoration: none; border-radius: 999px; font-weight: bold;">
             View the item
           </a>
           <p style="color: #999; font-size: 13px;">

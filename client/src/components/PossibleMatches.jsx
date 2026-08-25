@@ -41,22 +41,22 @@ export default function PossibleMatches({ itemId, kind }) {
         {loading
           ? [1, 2, 3].map((key) => <ItemCardSkeleton key={key} />)
           : matches.map((match) => (
-              <div key={String(match.item._id)} className="relative">
+              <div key={String(match.item._id)}>
                 <ItemCard item={match.item} kind={match.kind} />
-                <div className="pointer-events-none absolute left-3 top-14 flex flex-wrap gap-1">
-                  <span className="rounded-full bg-paper/95 px-2 py-0.5 text-[11px] font-semibold text-forest shadow-sm">
+                <div className="mt-2 flex flex-wrap items-center gap-1.5 text-xs text-muted">
+                  <span className="rounded-full bg-forest-light px-2 py-0.5 font-semibold text-forest">
                     {Math.round(match.score * 100)}% {t.match.score}
                   </span>
-                </div>
-                <p className="mt-2 text-xs text-muted">
                   {[
                     match.reasons?.category && t.match.sameCategory,
                     match.reasons?.district && t.match.sameDistrict,
                     match.reasons?.title >= 0.5 && t.match.similarTitle,
                   ]
                     .filter(Boolean)
-                    .join(' · ')}
-                </p>
+                    .map((label) => (
+                      <span key={label}>{label}</span>
+                    ))}
+                </div>
               </div>
             ))}
       </div>
